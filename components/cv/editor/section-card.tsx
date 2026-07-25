@@ -1,0 +1,83 @@
+"use client";
+
+import { PlusIcon, Trash2Icon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
+
+export function SectionCard({
+  title,
+  description,
+  onAdd,
+  addLabel = "Add",
+  isEmpty,
+  emptyLabel,
+  children,
+}: {
+  title: string;
+  description?: string;
+  onAdd: () => void;
+  addLabel?: string;
+  isEmpty: boolean;
+  emptyLabel: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <Card>
+      <CardHeader className="flex-row items-center justify-between">
+        <div>
+          <CardTitle>{title}</CardTitle>
+          {description && (
+            <p className="mt-1 text-sm text-muted-foreground">{description}</p>
+          )}
+        </div>
+        <Button type="button" variant="outline" size="sm" onClick={onAdd}>
+          <PlusIcon className="size-4" />
+          {addLabel}
+        </Button>
+      </CardHeader>
+      <CardContent className="flex flex-col gap-4">
+        {isEmpty ? (
+          <p className="text-sm text-muted-foreground">{emptyLabel}</p>
+        ) : (
+          children
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
+export function ItemCard({
+  onRemove,
+  removeLabel = "Remove",
+  className,
+  children,
+}: {
+  onRemove: () => void;
+  removeLabel?: string;
+  className?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div
+      className={cn(
+        "flex flex-col gap-3 rounded-lg border border-border bg-muted/30 p-4",
+        className,
+      )}
+    >
+      {children}
+      <div className="flex justify-end">
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          onClick={onRemove}
+          className="text-muted-foreground hover:text-destructive"
+        >
+          <Trash2Icon className="size-4" />
+          {removeLabel}
+        </Button>
+      </div>
+    </div>
+  );
+}
