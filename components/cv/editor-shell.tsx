@@ -6,14 +6,21 @@ import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { pdf } from "@react-pdf/renderer";
 import { toast } from "sonner";
-import { DownloadIcon, FileTextIcon } from "lucide-react";
+import { ChevronDownIcon, DownloadIcon, FileTextIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { cvDataSchema, type CvData } from "@/lib/cv/schema";
 import { loadCv, saveCv } from "@/lib/cv/storage";
 import { createSampleCv } from "@/lib/cv/sample-data";
 import { templateRegistry } from "@/lib/cv/templates";
+import { generateCvDocx } from "@/lib/docx/generate-cv-docx";
 import { TemplatePicker } from "@/components/cv/editor/template-picker";
 import { PersonalInfoSection } from "@/components/cv/editor/personal-info-section";
 import { ExperienceSection } from "@/components/cv/editor/experience-section";
@@ -71,33 +78,43 @@ export function CvEditorShell() {
     return () => clearTimeout(timeout);
   }, [values]);
 
-  async function handleDownload() {
+  function downloadBlob(blob: Blob, filename: string) {
+    const url = URL.createObjectURL(blob);
+    const onIOS = isIOSSafari();
+
+    if (onIOS) {
+      // iOS Safari doesn't reliably honor the `download` attribute on blob
+      // URLs. Opening the file in a new tab lets the user save it via the
+      // native Share sheet instead.
+      window.open(url, "_blank");
+    } else {
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    }
+
+    // Revoking too soon can race with the browser's (sometimes async)
+    // handling of the blob URL, especially on mobile — give it time.
+    setTimeout(() => URL.revokeObjectURL(url), 30_000);
+    toast.success(onIOS ? t.editor.downloadSuccessIOS : t.editor.downloadSuccess);
+  }
+
+  async function handleDownload(format: "pdf" | "docx") {
     setIsDownloading(true);
     try {
       const data = form.getValues();
-      const PdfComponent = templateRegistry[data.templateId].PdfComponent;
-      const blob = await pdf(<PdfComponent data={data} />).toBlob();
-      const url = URL.createObjectURL(blob);
-      const onIOS = isIOSSafari();
-
-      if (onIOS) {
-        // iOS Safari doesn't reliably honor the `download` attribute on blob
-        // URLs. Opening the PDF in a new tab lets the user save it via the
-        // native Share sheet instead.
-        window.open(url, "_blank");
+      const filenameBase = sanitizeFilename(data.personalInfo.fullName);
+      if (format === "pdf") {
+        const PdfComponent = templateRegistry[data.templateId].PdfComponent;
+        const blob = await pdf(<PdfComponent data={data} />).toBlob();
+        downloadBlob(blob, `${filenameBase}.pdf`);
       } else {
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `${sanitizeFilename(data.personalInfo.fullName)}.pdf`;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
+        const blob = await generateCvDocx(data);
+        downloadBlob(blob, `${filenameBase}.docx`);
       }
-
-      // Revoking too soon can race with the browser's (sometimes async)
-      // handling of the blob URL, especially on mobile — give it time.
-      setTimeout(() => URL.revokeObjectURL(url), 30_000);
-      toast.success(onIOS ? t.editor.downloadSuccessIOS : t.editor.downloadSuccess);
     } catch {
       toast.error(t.editor.downloadError);
     } finally {
@@ -136,10 +153,21 @@ export function CvEditorShell() {
           </span>
           <ThemeToggle />
           <LanguageSwitcher />
-          <Button onClick={handleDownload} disabled={isDownloading} size="sm">
-            <DownloadIcon className="size-4" />
-            {isDownloading ? t.editor.preparingPdf : t.editor.downloadPdf}
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger render={<Button disabled={isDownloading} size="sm" />}>
+              <DownloadIcon className="size-4" />
+              {isDownloading ? t.editor.preparingPdf : t.editor.download}
+              <ChevronDownIcon className="size-3.5" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => handleDownload("pdf")}>
+                {t.editor.downloadAsPdf}
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleDownload("docx")}>
+                {t.editor.downloadAsWord}
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </header>
 

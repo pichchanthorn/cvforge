@@ -1,3 +1,5 @@
+import type { CvData } from "@/lib/cv/schema";
+
 const MONTHS = [
   "Jan", "Feb", "Mar", "Apr", "May", "Jun",
   "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
@@ -24,4 +26,19 @@ export function formatDateRange(
   if (!startLabel && !endLabel) return "";
   if (!endLabel) return startLabel;
   return `${startLabel} – ${endLabel}`;
+}
+
+export const UNGROUPED_SKILLS = "__ungrouped__";
+
+/** Groups skills by their optional groupName, preserving first-seen order. */
+export function groupSkills(skills: CvData["skills"]): [string, string[]][] {
+  const groups = new Map<string, string[]>();
+  for (const skill of skills) {
+    if (!skill.name) continue;
+    const key = skill.groupName || UNGROUPED_SKILLS;
+    const list = groups.get(key) ?? [];
+    list.push(skill.name);
+    groups.set(key, list);
+  }
+  return Array.from(groups.entries());
 }

@@ -1,6 +1,6 @@
 import { Document, Page, View, Text, StyleSheet } from "@react-pdf/renderer";
 import type { CvData } from "@/lib/cv/schema";
-import { formatDateRange } from "@/lib/cv/format";
+import { formatDateRange, groupSkills, UNGROUPED_SKILLS } from "@/lib/cv/format";
 import { registerPdfFonts } from "@/lib/pdf/fonts";
 
 registerPdfFonts();
@@ -176,7 +176,7 @@ export function AtsOneColumnDocument({ data }: { data: CvData }) {
             <Text style={styles.sectionHeading}>Skills</Text>
             {skillGroups.map(([group, items]) => (
               <Text key={group} style={[styles.bodyText, { marginBottom: 2 }]}>
-                {group !== UNGROUPED && <Text style={{ color: "#000000" }}>{group}: </Text>}
+                {group !== UNGROUPED_SKILLS && <Text style={{ color: "#000000" }}>{group}: </Text>}
                 {items.join(", ")}
               </Text>
             ))}
@@ -235,18 +235,4 @@ export function AtsOneColumnDocument({ data }: { data: CvData }) {
       </Page>
     </Document>
   );
-}
-
-const UNGROUPED = "__ungrouped__";
-
-function groupSkills(skills: CvData["skills"]): [string, string[]][] {
-  const groups = new Map<string, string[]>();
-  for (const skill of skills) {
-    if (!skill.name) continue;
-    const key = skill.groupName || UNGROUPED;
-    const list = groups.get(key) ?? [];
-    list.push(skill.name);
-    groups.set(key, list);
-  }
-  return Array.from(groups.entries());
 }

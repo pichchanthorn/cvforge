@@ -1,5 +1,5 @@
 import type { CvData } from "@/lib/cv/schema";
-import { formatDateRange } from "@/lib/cv/format";
+import { formatDateRange, groupSkills, UNGROUPED_SKILLS } from "@/lib/cv/format";
 
 function SectionHeading({ children }: { children: React.ReactNode }) {
   return (
@@ -118,7 +118,7 @@ export function ModernPreview({ data }: { data: CvData }) {
             <div className="space-y-1">
               {skillGroups.map(([group, items]) => (
                 <p key={group} className="text-[12.5px] text-neutral-800">
-                  {group !== UNGROUPED && <span className="font-semibold">{group}: </span>}
+                  {group !== UNGROUPED_SKILLS && <span className="font-semibold">{group}: </span>}
                   {items.join(", ")}
                 </p>
               ))}
@@ -191,18 +191,4 @@ export function ModernPreview({ data }: { data: CvData }) {
       </div>
     </div>
   );
-}
-
-const UNGROUPED = "__ungrouped__";
-
-function groupSkills(skills: CvData["skills"]): [string, string[]][] {
-  const groups = new Map<string, string[]>();
-  for (const skill of skills) {
-    if (!skill.name) continue;
-    const key = skill.groupName || UNGROUPED;
-    const list = groups.get(key) ?? [];
-    list.push(skill.name);
-    groups.set(key, list);
-  }
-  return Array.from(groups.entries());
 }
