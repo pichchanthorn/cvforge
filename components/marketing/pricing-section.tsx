@@ -5,6 +5,7 @@ import { CheckIcon } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Reveal } from "@/components/reveal";
 import { useT } from "@/lib/i18n/language-context";
 import { cn } from "@/lib/utils";
 
@@ -25,33 +26,37 @@ export function PricingSection() {
         </div>
 
         <div className="mx-auto mt-10 grid max-w-2xl grid-cols-1 gap-6 sm:grid-cols-2">
-          <PlanCard
-            name={free.name}
-            price={free.price}
-            period={free.period}
-            features={freeFeatures}
-          >
-            <Button className="w-full" nativeButton={false} render={<Link href="/editor" />}>
-              {free.cta}
-            </Button>
-          </PlanCard>
-
-          <PlanCard
-            name={pro.name}
-            price={pro.price}
-            period={pro.period}
-            features={proFeatures}
-            badge={pro.badge}
-            highlighted
-          >
-            <Button
-              variant="outline"
-              className="w-full"
-              onClick={() => toast(pro.ctaToast)}
+          <Reveal>
+            <PlanCard
+              name={free.name}
+              price={free.price}
+              period={free.period}
+              features={freeFeatures}
             >
-              {pro.cta}
-            </Button>
-          </PlanCard>
+              <Button className="w-full" nativeButton={false} render={<Link href="/editor" />}>
+                {free.cta}
+              </Button>
+            </PlanCard>
+          </Reveal>
+
+          <Reveal delay={100}>
+            <PlanCard
+              name={pro.name}
+              price={pro.price}
+              period={pro.period}
+              features={proFeatures}
+              badge={pro.badge}
+              highlighted
+            >
+              <Button
+                variant="outline"
+                className="w-full"
+                onClick={() => toast(pro.ctaToast)}
+              >
+                {pro.cta}
+              </Button>
+            </PlanCard>
+          </Reveal>
         </div>
       </div>
     </section>
@@ -82,7 +87,14 @@ function PlanCard({
           {badge}
         </span>
       )}
-      <Card className={cn("shadow-none", highlighted && "border-primary/40")}>
+      <Card
+        className={cn(
+          "h-full shadow-none transition-all duration-300 hover:-translate-y-1 hover:shadow-lg",
+          highlighted
+            ? "border-primary/40 hover:shadow-primary/10"
+            : "hover:border-foreground/20 hover:shadow-foreground/5",
+        )}
+      >
         <CardHeader>
           <p className="text-sm font-medium text-muted-foreground">{name}</p>
           <p className="flex items-baseline gap-1">
