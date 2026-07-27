@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Kantumruy_Pro } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
+import { LanguageProvider } from "@/lib/i18n/language-context";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
 
@@ -15,13 +16,34 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const kantumruyPro = Kantumruy_Pro({
+  variable: "--font-khmer",
+  subsets: ["khmer", "latin"],
+  weight: ["400", "500", "600", "700"],
+});
+
+const title = "CVForge — Build a professional CV, fast";
+const description =
+  "Create a professional, ATS-friendly CV or resume with CVForge. Fill in your details, preview live, and download a polished PDF.";
+
 export const metadata: Metadata = {
+  metadataBase: new URL("https://pichchanthorn.me"),
   title: {
-    default: "CVForge — Build a professional CV, fast",
+    default: title,
     template: "%s · CVForge",
   },
-  description:
-    "Create a professional, ATS-friendly CV or resume with CVForge. Fill in your details, preview live, and download a polished PDF.",
+  description,
+  openGraph: {
+    title,
+    description,
+    type: "website",
+    siteName: "CVForge",
+  },
+  twitter: {
+    card: "summary",
+    title,
+    description,
+  },
 };
 
 export default function RootLayout({
@@ -32,7 +54,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${kantumruyPro.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col" suppressHydrationWarning>
@@ -42,10 +64,12 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <TooltipProvider>
-            {children}
-            <Toaster />
-          </TooltipProvider>
+          <LanguageProvider>
+            <TooltipProvider>
+              {children}
+              <Toaster />
+            </TooltipProvider>
+          </LanguageProvider>
         </ThemeProvider>
       </body>
     </html>

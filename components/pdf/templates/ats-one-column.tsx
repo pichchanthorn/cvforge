@@ -1,13 +1,16 @@
 import { Document, Page, View, Text, StyleSheet } from "@react-pdf/renderer";
 import type { CvData } from "@/lib/cv/schema";
 import { formatDateRange } from "@/lib/cv/format";
+import { registerPdfFonts } from "@/lib/pdf/fonts";
+
+registerPdfFonts();
 
 const styles = StyleSheet.create({
   page: {
     paddingTop: 54,
     paddingBottom: 54,
     paddingHorizontal: 54,
-    fontFamily: "Helvetica",
+    fontFamily: "NotoSansKhmer",
     fontSize: 10.5,
     color: "#1a1a1a",
   },
@@ -16,7 +19,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   name: {
-    fontFamily: "Helvetica-Bold",
     fontSize: 20,
   },
   headline: {
@@ -33,7 +35,6 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
   sectionHeading: {
-    fontFamily: "Helvetica-Bold",
     fontSize: 9,
     letterSpacing: 1.2,
     color: "#333333",
@@ -52,11 +53,9 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
   },
   entryTitle: {
-    fontFamily: "Helvetica-Bold",
-    fontSize: 10.5,
+    fontSize: 11.5,
   },
   entrySubtitle: {
-    fontFamily: "Helvetica",
     color: "#444444",
   },
   entryMeta: {
@@ -177,7 +176,7 @@ export function AtsOneColumnDocument({ data }: { data: CvData }) {
             <Text style={styles.sectionHeading}>Skills</Text>
             {skillGroups.map(([group, items]) => (
               <Text key={group} style={[styles.bodyText, { marginBottom: 2 }]}>
-                {group !== UNGROUPED && <Text style={{ fontFamily: "Helvetica-Bold" }}>{group}: </Text>}
+                {group !== UNGROUPED && <Text style={{ color: "#000000" }}>{group}: </Text>}
                 {items.join(", ")}
               </Text>
             ))}

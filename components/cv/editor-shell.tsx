@@ -13,8 +13,8 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cvDataSchema, type CvData } from "@/lib/cv/schema";
 import { loadCv, saveCv } from "@/lib/cv/storage";
 import { createSampleCv } from "@/lib/cv/sample-data";
-import { AtsOneColumnPreview } from "@/components/cv/preview/ats-one-column";
-import { AtsOneColumnDocument } from "@/components/pdf/templates/ats-one-column";
+import { templateRegistry } from "@/lib/cv/templates";
+import { TemplatePicker } from "@/components/cv/editor/template-picker";
 import { PersonalInfoSection } from "@/components/cv/editor/personal-info-section";
 import { ExperienceSection } from "@/components/cv/editor/experience-section";
 import { EducationSection } from "@/components/cv/editor/education-section";
@@ -22,6 +22,8 @@ import { SkillsSection } from "@/components/cv/editor/skills-section";
 import { ProjectsSection } from "@/components/cv/editor/projects-section";
 import { LanguagesSection } from "@/components/cv/editor/languages-section";
 import { CertificationsSection } from "@/components/cv/editor/certifications-section";
+import { LanguageSwitcher } from "@/components/language-switcher";
+import { useT } from "@/lib/i18n/language-context";
 import { cn } from "@/lib/utils";
 
 type SaveStatus = "idle" | "saving" | "saved";
@@ -32,6 +34,7 @@ function sanitizeFilename(name: string) {
 }
 
 export function CvEditorShell() {
+  const t = useT();
   const [activeTab, setActiveTab] = useState<"edit" | "preview">("edit");
   const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
   const [isDownloading, setIsDownloading] = useState(false);
@@ -63,7 +66,8 @@ export function CvEditorShell() {
     setIsDownloading(true);
     try {
       const data = form.getValues();
-      const blob = await pdf(<AtsOneColumnDocument data={data} />).toBlob();
+      const PdfComponent = templateRegistry[data.templateId].PdfComponent;
+      const blob = await pdf(<PdfComponent data={data} />).toBlob();
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
@@ -88,6 +92,9 @@ export function CvEditorShell() {
     );
   }
 
+  const activeData = values ?? createSampleCv();
+  const PreviewComponent = templateRegistry[activeData.templateId ?? "ats-one-column"].PreviewComponent;
+
   return (
     <div className="flex min-h-screen flex-col bg-muted/30">
       <header className="sticky top-0 z-10 flex flex-wrap items-center justify-between gap-3 border-b border-border bg-background px-4 py-3 sm:px-6">
@@ -99,16 +106,17 @@ export function CvEditorShell() {
             value={values?.title ?? ""}
             onChange={(e) => form.setValue("title", e.target.value, { shouldDirty: true })}
             className="h-8 w-40 border-none bg-transparent text-sm font-medium shadow-none focus-visible:ring-1 sm:w-56"
-            aria-label="CV title"
+            aria-label={t.editor.cvTitleLabel}
           />
         </div>
         <div className="flex items-center gap-3">
           <span className="hidden text-xs text-muted-foreground sm:inline">
-            {saveStatus === "saving" ? "Saving…" : "Saved locally"}
+            {saveStatus === "saving" ? t.editor.saving : t.editor.savedLocally}
           </span>
+          <LanguageSwitcher />
           <Button onClick={handleDownload} disabled={isDownloading} size="sm">
             <DownloadIcon className="size-4" />
-            {isDownloading ? "Preparing…" : "Download PDF"}
+            {isDownloading ? t.editor.preparingPdf : t.editor.downloadPdf}
           </Button>
         </div>
       </header>
@@ -119,16 +127,17 @@ export function CvEditorShell() {
         className="lg:hidden"
       >
         <TabsList className="mx-4 mt-3 w-[calc(100%-2rem)]">
-          <TabsTrigger value="edit">Edit</TabsTrigger>
+          <TabsTrigger value="edit">{t.editor.edit}</TabsTrigger>
           <TabsTrigger value="preview">
             <FileTextIcon className="size-4" />
-            Preview
+            {t.editor.preview}
           </TabsTrigger>
         </TabsList>
       </Tabs>
 
       <main className="mx-auto grid w-full max-w-7xl flex-1 grid-cols-1 gap-6 p-4 sm:p-6 lg:grid-cols-2">
         <div className={cn("flex flex-col gap-4", activeTab !== "edit" && "hidden lg:flex")}>
+          <TemplatePicker control={form.control} />
           <PersonalInfoSection control={form.control} />
           <ExperienceSection control={form.control} />
           <EducationSection control={form.control} />
@@ -144,7 +153,7 @@ export function CvEditorShell() {
             activeTab !== "preview" && "hidden lg:block",
           )}
         >
-          <AtsOneColumnPreview data={values ?? createSampleCv()} />
+          <PreviewComponent data={activeData} />
         </div>
       </main>
     </div>

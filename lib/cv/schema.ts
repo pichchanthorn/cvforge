@@ -79,8 +79,12 @@ export const certificationItemSchema = z.object({
   credentialUrl: z.string().max(300),
 });
 
+export const templateIds = ["ats-one-column", "modern", "sidebar"] as const;
+export type TemplateId = (typeof templateIds)[number];
+
 export const cvDataSchema = z.object({
   title: z.string().max(120),
+  templateId: z.enum(templateIds),
   personalInfo: personalInfoSchema,
   experience: z.array(experienceItemSchema).max(15),
   education: z.array(educationItemSchema).max(10),
@@ -102,6 +106,7 @@ export type CertificationItem = z.infer<typeof certificationItemSchema>;
 export function createEmptyCv(): CvData {
   return {
     title: "My CV",
+    templateId: "ats-one-column",
     personalInfo: {
       fullName: "",
       headline: "",

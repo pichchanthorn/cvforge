@@ -3,6 +3,7 @@ import { newId, type CvData } from "@/lib/cv/schema";
 export function createSampleCv(): CvData {
   return {
     title: "My CV",
+    templateId: "ats-one-column",
     personalInfo: {
       fullName: "Jordan Avery",
       headline: "Frontend Developer",

@@ -6,8 +6,11 @@ import { Button } from "@/components/ui/button";
 import { PlusIcon, Trash2Icon } from "lucide-react";
 import { TextField, TextareaField } from "@/components/cv/editor/controlled-field";
 import { newId, type CvData } from "@/lib/cv/schema";
+import { useT } from "@/lib/i18n/language-context";
 
 export function PersonalInfoSection({ control }: { control: Control<CvData> }) {
+  const t = useT();
+  const f = t.sections.personalInfoFields;
   const { fields, append, remove } = useFieldArray({
     control,
     name: "personalInfo.links",
@@ -16,27 +19,37 @@ export function PersonalInfoSection({ control }: { control: Control<CvData> }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Personal info</CardTitle>
+        <CardTitle>{t.sections.personalInfo.title}</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <TextField control={control} name="personalInfo.fullName" label="Full name" />
-          <TextField control={control} name="personalInfo.headline" label="Headline" placeholder="e.g. Frontend Developer" />
-          <TextField control={control} name="personalInfo.email" label="Email" type="email" />
-          <TextField control={control} name="personalInfo.phone" label="Phone" />
-          <TextField control={control} name="personalInfo.location" label="Location" placeholder="City, State" />
+          <TextField control={control} name="personalInfo.fullName" label={f.fullName} />
+          <TextField
+            control={control}
+            name="personalInfo.headline"
+            label={f.headline}
+            placeholder={f.headlinePlaceholder}
+          />
+          <TextField control={control} name="personalInfo.email" label={f.email} type="email" />
+          <TextField control={control} name="personalInfo.phone" label={f.phone} />
+          <TextField
+            control={control}
+            name="personalInfo.location"
+            label={f.location}
+            placeholder={f.locationPlaceholder}
+          />
         </div>
         <TextareaField
           control={control}
           name="personalInfo.summary"
-          label="Summary"
-          placeholder="A 2-3 sentence pitch of who you are and what you're looking for."
+          label={f.summary}
+          placeholder={f.summaryPlaceholder}
           rows={4}
         />
 
         <div className="flex flex-col gap-3">
           <div className="flex items-center justify-between">
-            <p className="text-sm font-medium">Links</p>
+            <p className="text-sm font-medium">{f.links}</p>
             <Button
               type="button"
               variant="outline"
@@ -44,7 +57,7 @@ export function PersonalInfoSection({ control }: { control: Control<CvData> }) {
               onClick={() => append({ id: newId(), label: "", url: "" })}
             >
               <PlusIcon className="size-4" />
-              Add link
+              {f.addLink}
             </Button>
           </div>
           {fields.map((field, index) => (
@@ -52,15 +65,15 @@ export function PersonalInfoSection({ control }: { control: Control<CvData> }) {
               <TextField
                 control={control}
                 name={`personalInfo.links.${index}.label`}
-                label="Label"
-                placeholder="Portfolio"
+                label={f.linkLabel}
+                placeholder={f.linkLabelPlaceholder}
                 className="w-32 shrink-0"
               />
               <TextField
                 control={control}
                 name={`personalInfo.links.${index}.url`}
-                label="URL"
-                placeholder="yoursite.com"
+                label={f.linkUrl}
+                placeholder={f.linkUrlPlaceholder}
                 className="flex-1"
               />
               <Button
@@ -69,7 +82,7 @@ export function PersonalInfoSection({ control }: { control: Control<CvData> }) {
                 size="icon"
                 onClick={() => remove(index)}
                 className="mb-0.5 text-muted-foreground hover:text-destructive"
-                aria-label="Remove link"
+                aria-label={t.common.remove}
               >
                 <Trash2Icon className="size-4" />
               </Button>
