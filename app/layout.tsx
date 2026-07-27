@@ -27,7 +27,7 @@ const description =
   "Create a professional, ATS-friendly CV or resume with CVForge. Fill in your details, preview live, and download a polished PDF.";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://pichchanthorn.me"),
+  metadataBase: new URL("https://cvforge.pichchanthorn.me"),
   title: {
     default: title,
     template: "%s · CVForge",
