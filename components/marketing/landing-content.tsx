@@ -5,6 +5,8 @@ import { ArrowRightIcon, SparklesIcon, DownloadIcon, ShieldCheckIcon } from "luc
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { LanguageSwitcher } from "@/components/language-switcher";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { Logo } from "@/components/logo";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { useT } from "@/lib/i18n/language-context";
 
@@ -21,8 +23,9 @@ export function LandingContent() {
     <div className="flex flex-1 flex-col">
       <header className="border-b border-border">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <span className="text-sm font-semibold tracking-tight">CVForge</span>
-          <div className="flex items-center gap-3">
+          <Logo />
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
             <LanguageSwitcher />
             <Button size="sm" nativeButton={false} render={<Link href="/editor" />}>
               {t.nav.openEditor}

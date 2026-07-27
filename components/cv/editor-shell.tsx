@@ -23,6 +23,8 @@ import { ProjectsSection } from "@/components/cv/editor/projects-section";
 import { LanguagesSection } from "@/components/cv/editor/languages-section";
 import { CertificationsSection } from "@/components/cv/editor/certifications-section";
 import { LanguageSwitcher } from "@/components/language-switcher";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { Logo } from "@/components/logo";
 import { useT } from "@/lib/i18n/language-context";
 import { cn } from "@/lib/utils";
 
@@ -31,6 +33,13 @@ type SaveStatus = "idle" | "saving" | "saved";
 function sanitizeFilename(name: string) {
   const cleaned = name.trim().replace(/[^a-zA-Z0-9\- _]/g, "").replace(/\s+/g, "-");
   return cleaned || "cv";
+}
+
+function isIOSSafari() {
+  if (typeof navigator === "undefined") return false;
+  const ua = navigator.userAgent;
+  const isIOSDevice = /iPad|iPhone|iPod/.test(ua) || (ua.includes("Macintosh") && navigator.maxTouchPoints > 1);
+  return isIOSDevice;
 }
 
 export function CvEditorShell() {
@@ -69,16 +78,28 @@ export function CvEditorShell() {
       const PdfComponent = templateRegistry[data.templateId].PdfComponent;
       const blob = await pdf(<PdfComponent data={data} />).toBlob();
       const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `${sanitizeFilename(data.personalInfo.fullName)}.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
-      toast.success("PDF downloaded");
+      const onIOS = isIOSSafari();
+
+      if (onIOS) {
+        // iOS Safari doesn't reliably honor the `download` attribute on blob
+        // URLs. Opening the PDF in a new tab lets the user save it via the
+        // native Share sheet instead.
+        window.open(url, "_blank");
+      } else {
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `${sanitizeFilename(data.personalInfo.fullName)}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      }
+
+      // Revoking too soon can race with the browser's (sometimes async)
+      // handling of the blob URL, especially on mobile — give it time.
+      setTimeout(() => URL.revokeObjectURL(url), 30_000);
+      toast.success(onIOS ? t.editor.downloadSuccessIOS : t.editor.downloadSuccess);
     } catch {
-      toast.error("Couldn't generate the PDF. Please try again.");
+      toast.error(t.editor.downloadError);
     } finally {
       setIsDownloading(false);
     }
@@ -99,8 +120,8 @@ export function CvEditorShell() {
     <div className="flex min-h-screen flex-col bg-muted/30">
       <header className="sticky top-0 z-10 flex flex-wrap items-center justify-between gap-3 border-b border-border bg-background px-4 py-3 sm:px-6">
         <div className="flex min-w-0 items-center gap-3">
-          <Link href="/" className="shrink-0 text-sm font-semibold tracking-tight">
-            CVForge
+          <Link href="/" className="shrink-0">
+            <Logo showWordmark={false} />
           </Link>
           <Input
             value={values?.title ?? ""}
@@ -113,6 +134,7 @@ export function CvEditorShell() {
           <span className="hidden text-xs text-muted-foreground sm:inline">
             {saveStatus === "saving" ? t.editor.saving : t.editor.savedLocally}
           </span>
+          <ThemeToggle />
           <LanguageSwitcher />
           <Button onClick={handleDownload} disabled={isDownloading} size="sm">
             <DownloadIcon className="size-4" />

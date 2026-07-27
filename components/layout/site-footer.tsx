@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { FileTextIcon } from "lucide-react";
+import { Logo } from "@/components/logo";
 import { useT } from "@/lib/i18n/language-context";
 
 const CONTACT_EMAIL = "chanthornpich22@gmail.com";
@@ -16,10 +16,7 @@ export function SiteFooter() {
     <footer className="border-t border-border">
       <div className="mx-auto flex max-w-6xl flex-col gap-4 px-6 py-8 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex flex-col gap-2">
-          <span className="flex items-center gap-1.5 text-sm font-semibold tracking-tight">
-            <FileTextIcon className="size-4" />
-            CVForge
-          </span>
+          <Logo size={20} />
           <p className="max-w-xs text-xs text-muted-foreground">{t.footer.tagline}</p>
         </div>
 

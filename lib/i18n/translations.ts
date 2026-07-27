@@ -6,6 +6,12 @@ export const translations = {
     common: {
       remove: "Remove",
     },
+    theme: {
+      toggle: "Toggle theme",
+      light: "Light",
+      dark: "Dark",
+      system: "System",
+    },
     nav: {
       openEditor: "Open editor",
     },
@@ -85,6 +91,9 @@ export const translations = {
       edit: "Edit",
       preview: "Preview",
       backHome: "Back to home",
+      downloadSuccess: "PDF downloaded",
+      downloadSuccessIOS: "Opening your PDF — use Share to save it",
+      downloadError: "Couldn't generate the PDF. Please try again.",
     },
     templates: {
       sectionTitle: "Template",
@@ -182,6 +191,12 @@ export const translations = {
     common: {
       remove: "លុប",
     },
+    theme: {
+      toggle: "ប្តូររបៀបពណ៌",
+      light: "ភ្លឺ",
+      dark: "ងងឹត",
+      system: "តាមប្រព័ន្ធ",
+    },
     nav: {
       openEditor: "បើកកម្មវិធីនិពន្ធ",
     },
@@ -259,6 +274,9 @@ export const translations = {
       edit: "កែសម្រួល",
       preview: "មើលជាមុន",
       backHome: "ត្រឡប់ទៅទំព័រដើម",
+      downloadSuccess: "បានទាញយក PDF",
+      downloadSuccessIOS: "កំពុងបើក PDF — សូមប្រើ Share ដើម្បីរក្សាទុក",
+      downloadError: "មិនអាចបង្កើត PDF បានទេ សូមព្យាយាមម្តងទៀត។",
     },
     templates: {
       sectionTitle: "គំរូ",
