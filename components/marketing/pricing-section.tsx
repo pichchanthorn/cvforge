@@ -76,30 +76,32 @@ function PlanCard({
   children: React.ReactNode;
 }) {
   return (
-    <Card className={cn("relative shadow-none", highlighted && "border-primary/40")}>
+    <div className="relative">
       {badge && (
-        <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-3 py-0.5 text-xs font-medium text-primary-foreground">
+        <span className="absolute -top-3 left-1/2 z-10 -translate-x-1/2 rounded-full bg-primary px-3 py-0.5 text-xs font-medium whitespace-nowrap text-primary-foreground">
           {badge}
         </span>
       )}
-      <CardHeader>
-        <p className="text-sm font-medium text-muted-foreground">{name}</p>
-        <p className="flex items-baseline gap-1">
-          <span className="text-3xl font-semibold tracking-tight">{price}</span>
-          <span className="text-sm text-muted-foreground">{period}</span>
-        </p>
-      </CardHeader>
-      <CardContent className="flex flex-col gap-4">
-        <ul className="flex flex-col gap-2">
-          {features.map((feature) => (
-            <li key={feature} className="flex items-start gap-2 text-sm">
-              <CheckIcon className="mt-0.5 size-4 shrink-0 text-primary" />
-              <span className="text-muted-foreground">{feature}</span>
-            </li>
-          ))}
-        </ul>
-        {children}
-      </CardContent>
-    </Card>
+      <Card className={cn("shadow-none", highlighted && "border-primary/40")}>
+        <CardHeader>
+          <p className="text-sm font-medium text-muted-foreground">{name}</p>
+          <p className="flex items-baseline gap-1">
+            <span className="text-3xl font-semibold tracking-tight">{price}</span>
+            <span className="text-sm text-muted-foreground">{period}</span>
+          </p>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-4">
+          <ul className="flex flex-col gap-2">
+            {features.map((feature) => (
+              <li key={feature} className="flex items-start gap-2 text-sm">
+                <CheckIcon className="mt-0.5 size-4 shrink-0 text-primary" />
+                <span className="text-muted-foreground">{feature}</span>
+              </li>
+            ))}
+          </ul>
+          {children}
+        </CardContent>
+      </Card>
+    </div>
   );
 }
