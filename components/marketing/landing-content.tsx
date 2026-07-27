@@ -8,6 +8,7 @@ import { LanguageSwitcher } from "@/components/language-switcher";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Logo } from "@/components/logo";
 import { SiteFooter } from "@/components/layout/site-footer";
+import { PricingSection } from "@/components/marketing/pricing-section";
 import { useT } from "@/lib/i18n/language-context";
 
 export function LandingContent() {
@@ -63,6 +64,8 @@ export function LandingContent() {
             ))}
           </div>
         </section>
+
+        <PricingSection />
       </main>
 
       <SiteFooter />
