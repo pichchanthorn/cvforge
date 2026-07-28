@@ -15,6 +15,11 @@ export const translations = {
     nav: {
       openEditor: "Open editor",
     },
+    notFound: {
+      title: "Page not found",
+      subtitle: "The page you're looking for doesn't exist or may have moved.",
+      cta: "Back to home",
+    },
     landing: {
       heroTitle: "Build a professional CV in minutes",
       heroSubtitle:
@@ -28,6 +33,11 @@ export const translations = {
         "A clean, single-column layout that applicant tracking systems can actually parse.",
       featurePdfTitle: "One-click PDF export",
       featurePdfDesc: "Download a polished, print-ready PDF whenever you're ready to apply.",
+      featureBilingualTitle: "English & Khmer",
+      featureBilingualDesc:
+        "Write and export your CV in English or Khmer — switch the whole interface in one tap.",
+      templatesTitle: "Three templates, one click away",
+      templatesSubtitle: "Switch anytime — your data stays exactly the same.",
       footerNote: "Your data stays in your browser.",
     },
     pricing: {
@@ -230,6 +240,11 @@ export const translations = {
     nav: {
       openEditor: "បើកកម្មវិធីនិពន្ធ",
     },
+    notFound: {
+      title: "រកមិនឃើញទំព័រ",
+      subtitle: "ទំព័រដែលអ្នកកំពុងស្វែងរកមិនមាន ឬប្រហែលជាត្រូវបានផ្លាស់ទីទៅកន្លែងផ្សេង។",
+      cta: "ត្រឡប់ទៅទំព័រដើម",
+    },
     landing: {
       heroTitle: "បង្កើត CV ប្រកបដោយវិជ្ជាជីវៈក្នុងរយៈពេលប៉ុន្មាននាទី",
       heroSubtitle:
@@ -241,6 +256,11 @@ export const translations = {
       featureAtsDesc: "ប្លង់ជួរឈរតែមួយច្បាស់លាស់ ដែលប្រព័ន្ធតាមដានពាក្យស្នើសុំអាចអានបាន។",
       featurePdfTitle: "ទាញយក PDF ក្នុងចុចតែមួយ",
       featurePdfDesc: "ទាញយកឯកសារ PDF ស្អាត ត្រៀមបោះពុម្ព នៅពេលណាដែលអ្នកចង់ដាក់ពាក្យ។",
+      featureBilingualTitle: "ភាសាខ្មែរ និងអង់គ្លេស",
+      featureBilingualDesc:
+        "សរសេរ និងទាញយក CV ជាភាសាខ្មែរ ឬអង់គ្លេស — ប្តូរភាសាទាំងអេក្រង់បានក្នុងចុចតែមួយ។",
+      templatesTitle: "បីគំរូ ជ្រើសរើសបានក្នុងចុចតែមួយ",
+      templatesSubtitle: "ប្តូរបានគ្រប់ពេល ដោយទិន្នន័យរបស់អ្នកមិនបាត់ទេ។",
       footerNote: "ទិន្នន័យរបស់អ្នករក្សាទុកនៅក្នុង browser របស់អ្នកតែប៉ុណ្ណោះ។",
     },
     pricing: {
