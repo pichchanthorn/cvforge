@@ -17,7 +17,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cvDataSchema, type CvData } from "@/lib/cv/schema";
-import { loadCv, saveCv } from "@/lib/cv/storage";
+import { loadCv, saveCv, cvStorageKey } from "@/lib/cv/storage";
+import { useDemoAccount } from "@/lib/demo-account/demo-account-context";
 import { createSampleCv } from "@/lib/cv/sample-data";
 import { templateRegistry } from "@/lib/cv/templates";
 import { generateCvDocx } from "@/lib/docx/generate-cv-docx";
@@ -55,11 +56,17 @@ export function CvEditorShell() {
   const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
   const [isDownloading, setIsDownloading] = useState(false);
   const hasMounted = useRef(false);
+  const { account } = useDemoAccount();
+  // Logged-in demo accounts get their own CV, namespaced by email, so
+  // switching accounts on the same browser doesn't share one CV. Read once —
+  // this page never renders on the server, so `account` is already correct
+  // on the very first client render.
+  const [storageKey] = useState(() => cvStorageKey(account?.email));
 
   const form = useForm<CvData>({
     resolver: zodResolver(cvDataSchema),
     mode: "onBlur",
-    defaultValues: () => Promise.resolve(loadCv() ?? createSampleCv()),
+    defaultValues: () => Promise.resolve(loadCv(storageKey) ?? createSampleCv()),
   });
 
   const values = useWatch({ control: form.control }) as CvData;
@@ -72,11 +79,11 @@ export function CvEditorShell() {
     }
     setSaveStatus("saving");
     const timeout = setTimeout(() => {
-      saveCv(values);
+      saveCv(values, storageKey);
       setSaveStatus("saved");
     }, 500);
     return () => clearTimeout(timeout);
-  }, [values]);
+  }, [values, storageKey]);
 
   function downloadBlob(blob: Blob, filename: string) {
     const url = URL.createObjectURL(blob);

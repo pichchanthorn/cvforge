@@ -7,6 +7,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
+      disallow: ["/dashboard", "/account"],
     },
     sitemap: "https://cvforge.pichchanthorn.me/sitemap.xml",
   };

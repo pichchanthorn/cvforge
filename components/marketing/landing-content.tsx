@@ -18,9 +18,11 @@ import { SiteFooter } from "@/components/layout/site-footer";
 import { PricingSection } from "@/components/marketing/pricing-section";
 import { Reveal } from "@/components/reveal";
 import { useT } from "@/lib/i18n/language-context";
+import { useDemoAccount } from "@/lib/demo-account/demo-account-context";
 
 export function LandingContent() {
   const t = useT();
+  const { isLoggedIn } = useDemoAccount();
 
   const features = [
     { icon: SparklesIcon, title: t.landing.featureLivePreviewTitle, description: t.landing.featureLivePreviewDesc },
@@ -43,6 +45,15 @@ export function LandingContent() {
           <div className="flex items-center gap-2">
             <ThemeToggle />
             <LanguageSwitcher />
+            <Button
+              size="sm"
+              variant="ghost"
+              className="hidden sm:inline-flex"
+              nativeButton={false}
+              render={<Link href={isLoggedIn ? "/dashboard" : "/login"} />}
+            >
+              {isLoggedIn ? t.nav.dashboard : t.nav.logIn}
+            </Button>
             <Button size="sm" nativeButton={false} render={<Link href="/editor" />}>
               {t.nav.openEditor}
             </Button>

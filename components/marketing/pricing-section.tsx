@@ -18,7 +18,7 @@ export function PricingSection() {
   const proFeatures = [pro.feature1, pro.feature2, pro.feature3, pro.feature4, pro.feature5];
 
   return (
-    <section className="border-t border-border">
+    <section id="pricing" className="scroll-mt-20 border-t border-border">
       <div className="mx-auto max-w-4xl px-6 py-16 sm:py-20">
         <div className="text-center">
           <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">{t.pricing.title}</h2>
