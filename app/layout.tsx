@@ -23,20 +23,35 @@ const kantumruyPro = Kantumruy_Pro({
   weight: ["400", "500", "600", "700"],
 });
 
-const title = "CVForge — Build a professional CV, fast";
+const SITE_URL = "https://cvforge.pichchanthorn.me";
+const title = "CVForge — Free CV & Resume Builder (ATS-Friendly)";
 const description =
-  "Create a professional, ATS-friendly CV or resume with CVForge. Fill in your details, preview live, and download a polished PDF.";
+  "Build a professional, ATS-friendly CV or resume for free with CVForge. Fill in your details, preview live in English or Khmer, and download a polished PDF — no sign-up, no watermark, your data stays in your browser.";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://cvforge.pichchanthorn.me"),
+  metadataBase: new URL(SITE_URL),
   title: {
     default: title,
     template: "%s · CVForge",
   },
   description,
+  keywords: [
+    "CV builder",
+    "resume builder",
+    "free CV maker",
+    "ATS-friendly resume",
+    "CV builder Cambodia",
+    "online resume builder",
+    "Khmer CV template",
+    "CV template free download",
+  ],
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
     title,
     description,
+    url: SITE_URL,
     type: "website",
     siteName: "CVForge",
   },
@@ -45,6 +60,29 @@ export const metadata: Metadata = {
     title,
     description,
   },
+};
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "CVForge",
+  url: SITE_URL,
+  description,
+  applicationCategory: "BusinessApplication",
+  operatingSystem: "Any (runs in browser)",
+  inLanguage: ["en", "km"],
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "USD",
+  },
+  featureList: [
+    "Live CV preview",
+    "ATS-friendly templates",
+    "PDF export",
+    "Bilingual English/Khmer support",
+    "No account required, data stays in the browser",
+  ],
 };
 
 export default function RootLayout({
@@ -59,6 +97,12 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col" suppressHydrationWarning>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
+          }}
+        />
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

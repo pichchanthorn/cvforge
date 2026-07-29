@@ -1,19 +1,15 @@
-"use client";
+import type { Metadata } from "next";
+import { EditorLoader } from "@/components/editor-loader";
 
-import dynamic from "next/dynamic";
-
-const CvEditorShell = dynamic(
-  () => import("@/components/cv/editor-shell").then((m) => m.CvEditorShell),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="flex min-h-screen items-center justify-center bg-muted/30">
-        <p className="text-sm text-muted-foreground">Loading editor…</p>
-      </div>
-    ),
+export const metadata: Metadata = {
+  title: "Free CV Editor",
+  description:
+    "Fill in your details, preview your CV live, switch templates, and export a polished, ATS-friendly PDF — free, no sign-up required.",
+  alternates: {
+    canonical: "/editor",
   },
-);
+};
 
 export default function EditorPage() {
-  return <CvEditorShell />;
+  return <EditorLoader />;
 }
