@@ -6,7 +6,7 @@ import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { pdf } from "@react-pdf/renderer";
 import { toast } from "sonner";
-import { ChevronDownIcon, DownloadIcon, FileTextIcon } from "lucide-react";
+import { CheckIcon, ChevronDownIcon, DownloadIcon, FileTextIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -85,6 +85,15 @@ export function CvEditorShell() {
     return () => clearTimeout(timeout);
   }, [values, storageKey]);
 
+  // "saved" is the brief confirmation window that shows the checkmark; it
+  // decays back to "idle" so the switch from "Saving…" reads as a completed
+  // action rather than a silent text swap. Both states render the same label.
+  useEffect(() => {
+    if (saveStatus !== "saved") return;
+    const timeout = setTimeout(() => setSaveStatus("idle"), 1500);
+    return () => clearTimeout(timeout);
+  }, [saveStatus]);
+
   function downloadBlob(blob: Blob, filename: string) {
     const url = URL.createObjectURL(blob);
     const onIOS = isIOSSafari();
@@ -155,7 +164,18 @@ export function CvEditorShell() {
           />
         </div>
         <div className="flex items-center gap-3">
-          <span className="hidden text-xs text-muted-foreground sm:inline">
+          <span
+            className="hidden items-center gap-1.5 text-xs text-muted-foreground sm:inline-flex"
+            aria-live="polite"
+          >
+            {/* Kept mounted at all times so fading it in never shifts the header. */}
+            <CheckIcon
+              aria-hidden
+              className={cn(
+                "size-3.5 text-emerald-600 transition-all duration-300 ease-out motion-reduce:transition-none dark:text-emerald-400",
+                saveStatus === "saved" ? "scale-100 opacity-100" : "scale-75 opacity-0",
+              )}
+            />
             {saveStatus === "saving" ? t.editor.saving : t.editor.savedLocally}
           </span>
           <ThemeToggle />
@@ -181,7 +201,7 @@ export function CvEditorShell() {
       <Tabs
         value={activeTab}
         onValueChange={(v) => setActiveTab(v as "edit" | "preview")}
-        className="lg:hidden"
+        className="md:hidden"
       >
         <TabsList className="mx-4 mt-3 w-[calc(100%-2rem)]">
           <TabsTrigger value="edit">{t.editor.edit}</TabsTrigger>
@@ -192,8 +212,8 @@ export function CvEditorShell() {
         </TabsList>
       </Tabs>
 
-      <main className="mx-auto grid w-full max-w-7xl flex-1 grid-cols-1 gap-6 p-4 sm:p-6 lg:grid-cols-2">
-        <div className={cn("flex flex-col gap-4", activeTab !== "edit" && "hidden lg:flex")}>
+      <main className="mx-auto grid w-full max-w-7xl flex-1 grid-cols-1 gap-6 p-4 sm:p-6 md:grid-cols-2">
+        <div className={cn("flex flex-col gap-4", activeTab !== "edit" && "hidden md:flex")}>
           <TemplatePicker control={form.control} />
           <PersonalInfoSection control={form.control} />
           <ExperienceSection control={form.control} />
@@ -206,8 +226,8 @@ export function CvEditorShell() {
 
         <div
           className={cn(
-            "lg:sticky lg:top-20 lg:h-[calc(100vh-6rem)] lg:overflow-auto lg:rounded-lg lg:border lg:border-border",
-            activeTab !== "preview" && "hidden lg:block",
+            "md:sticky md:top-20 md:h-[calc(100vh-6rem)] md:overflow-auto md:rounded-lg md:border md:border-border",
+            activeTab !== "preview" && "hidden md:block",
           )}
         >
           <PreviewComponent data={activeData} />

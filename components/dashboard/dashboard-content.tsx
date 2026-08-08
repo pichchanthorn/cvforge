@@ -107,28 +107,47 @@ export function DashboardContent() {
           </Link>
         </p>
 
-        <div className="mt-8 max-w-md">
+        <div className="mt-8 max-w-3xl">
           <h2 className="text-sm font-medium text-muted-foreground">{t.dashboard.yourCv}</h2>
 
           {cv ? (
-            <Card className="mt-3">
-              <CardContent className="flex items-center gap-4">
-                <span className="inline-flex size-11 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                  <FileTextIcon className="size-5" />
-                </span>
-                <div className="min-w-0 flex-1">
-                  <p className="truncate font-medium">{cv.title || t.dashboard.untitled}</p>
-                  <p className="truncate text-xs text-muted-foreground">
-                    {cv.personalInfo.fullName || t.dashboard.savedLocally}
-                  </p>
-                </div>
-                <Button size="sm" nativeButton={false} render={<Link href="/editor" />}>
-                  {t.dashboard.openEditor}
-                </Button>
-              </CardContent>
-            </Card>
+            <div className="mt-3 grid gap-4 sm:grid-cols-2">
+              <Card>
+                <CardContent className="flex items-center gap-4">
+                  <span className="inline-flex size-11 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                    <FileTextIcon className="size-5" />
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate font-medium">{cv.title || t.dashboard.untitled}</p>
+                    <p className="truncate text-xs text-muted-foreground">
+                      {cv.personalInfo.fullName || t.dashboard.savedLocally}
+                    </p>
+                  </div>
+                  <Button size="sm" nativeButton={false} render={<Link href="/editor" />}>
+                    {t.dashboard.openEditor}
+                  </Button>
+                </CardContent>
+              </Card>
+
+              {/* Deliberately inert: a quiet nudge toward Pro, not a dead button.
+                  The Pro label is always visible rather than a tooltip, which
+                  touch devices can't surface. */}
+              <Card className="cursor-not-allowed border-dashed opacity-60 shadow-none select-none">
+                <CardContent className="flex items-center gap-4">
+                  <span className="inline-flex size-11 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground">
+                    <PlusIcon className="size-5" />
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate font-medium">{t.dashboard.addCv}</p>
+                    <Badge variant="outline" className="mt-1 font-normal">
+                      {t.dashboard.proOnly}
+                    </Badge>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           ) : (
-            <Card className="mt-3 border-dashed shadow-none">
+            <Card className="mt-3 max-w-md border-dashed shadow-none">
               <CardContent className="flex flex-col items-start gap-3">
                 <p className="text-sm font-medium">{t.dashboard.noCvTitle}</p>
                 <p className="text-sm text-muted-foreground">{t.dashboard.noCvBody}</p>

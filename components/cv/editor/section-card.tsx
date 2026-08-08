@@ -12,6 +12,7 @@ export function SectionCard({
   addLabel = "Add",
   isEmpty,
   emptyLabel,
+  emptyIcon,
   children,
 }: {
   title: string;
@@ -20,6 +21,8 @@ export function SectionCard({
   addLabel?: string;
   isEmpty: boolean;
   emptyLabel: string;
+  /** Optional icon shown beside `emptyLabel` so the empty state isn't bare text. */
+  emptyIcon?: React.ReactNode;
   children: React.ReactNode;
 }) {
   return (
@@ -38,7 +41,10 @@ export function SectionCard({
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
         {isEmpty ? (
-          <p className="text-sm text-muted-foreground">{emptyLabel}</p>
+          <p className="flex items-center gap-2 text-sm text-muted-foreground">
+            {emptyIcon}
+            {emptyLabel}
+          </p>
         ) : (
           children
         )}
