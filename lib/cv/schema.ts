@@ -79,7 +79,7 @@ export const certificationItemSchema = z.object({
   credentialUrl: z.string().max(300),
 });
 
-export const templateIds = ["ats-one-column", "modern", "sidebar"] as const;
+export const templateIds = ["ats-one-column", "modern", "sidebar", "creative"] as const;
 export type TemplateId = (typeof templateIds)[number];
 
 export const cvDataSchema = z.object({
