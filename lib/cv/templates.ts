@@ -4,9 +4,11 @@ import { templateIds } from "@/lib/cv/schema";
 import { AtsOneColumnPreview } from "@/components/cv/preview/ats-one-column";
 import { ModernPreview } from "@/components/cv/preview/modern";
 import { SidebarPreview } from "@/components/cv/preview/sidebar";
+import { CreativePreview } from "@/components/cv/preview/creative";
 import { AtsOneColumnDocument } from "@/components/pdf/templates/ats-one-column";
 import { ModernDocument } from "@/components/pdf/templates/modern";
 import { SidebarDocument } from "@/components/pdf/templates/sidebar";
+import { CreativeDocument } from "@/components/pdf/templates/creative";
 
 export { templateIds };
 export type { TemplateId };
@@ -31,5 +33,10 @@ export const templateRegistry: Record<
     PreviewComponent: SidebarPreview,
     PdfComponent: SidebarDocument,
     swatch: ["#115e59", "#99f6e4"],
+  },
+  creative: {
+    PreviewComponent: CreativePreview,
+    PdfComponent: CreativeDocument,
+    swatch: ["#7c5cff", "#ede9fe"],
   },
 };

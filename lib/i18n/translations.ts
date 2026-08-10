@@ -115,7 +115,7 @@ export const translations = {
       featureBilingualTitle: "English & Khmer",
       featureBilingualDesc:
         "Write and export your CV in English or Khmer — switch the whole interface in one tap.",
-      templatesTitle: "Three templates, one click away",
+      templatesTitle: "Four templates, one click away",
       templatesSubtitle: "Switch anytime — your data stays exactly the same.",
       footerNote: "Your data stays in your browser.",
     },
@@ -127,7 +127,7 @@ export const translations = {
         price: "$0",
         period: "forever",
         cta: "Start building",
-        feature1: "All 3 professional templates",
+        feature1: "All 4 professional templates",
         feature2: "Live preview as you type",
         feature3: "PDF & Word (.docx) export",
         feature4: "English & Khmer",
@@ -220,6 +220,7 @@ export const translations = {
       atsOneColumn: { name: "ATS Classic", description: "Plain, single-column — built to pass applicant tracking systems." },
       modern: { name: "Modern", description: "A confident color header with clean section breaks." },
       sidebar: { name: "Sidebar", description: "A colored sidebar for contact, skills, and languages." },
+      creative: { name: "Creative", description: "A violet timeline layout with markers for experience and education." },
     },
     sections: {
       personalInfo: { title: "Personal info" },
@@ -418,7 +419,7 @@ export const translations = {
       featureBilingualTitle: "ភាសាខ្មែរ និងអង់គ្លេស",
       featureBilingualDesc:
         "សរសេរ និងទាញយក CV ជាភាសាខ្មែរ ឬអង់គ្លេស — ប្តូរភាសាទាំងអេក្រង់បានក្នុងចុចតែមួយ។",
-      templatesTitle: "បីគំរូ ជ្រើសរើសបានក្នុងចុចតែមួយ",
+      templatesTitle: "បួនគំរូ ជ្រើសរើសបានក្នុងចុចតែមួយ",
       templatesSubtitle: "ប្តូរបានគ្រប់ពេល ដោយទិន្នន័យរបស់អ្នកមិនបាត់ទេ។",
       footerNote: "ទិន្នន័យរបស់អ្នករក្សាទុកនៅក្នុង browser របស់អ្នកតែប៉ុណ្ណោះ។",
     },
@@ -430,7 +431,7 @@ export const translations = {
         price: "$0",
         period: "រហូត",
         cta: "ចាប់ផ្តើមបង្កើត",
-        feature1: "គំរូវិជ្ជាជីវៈទាំង៣",
+        feature1: "គំរូវិជ្ជាជីវៈទាំង៤",
         feature2: "មើលឃើញភ្លាមៗពេលវាយបញ្ចូល",
         feature3: "ទាញយក PDF & Word (.docx)",
         feature4: "ភាសាអង់គ្លេស និងខ្មែរ",
@@ -523,6 +524,7 @@ export const translations = {
       atsOneColumn: { name: "ATS បុរាណ", description: "សាមញ្ញ ជួរឈរតែមួយ — សាងសង់ឡើងសម្រាប់ឲ្យឆ្លងកាត់ប្រព័ន្ធ ATS។" },
       modern: { name: "ទាន់សម័យ", description: "ក្បាលទំព័រពណ៌មានទំនុកចិត្ត ជាមួយផ្នែកនីមួយៗច្បាស់លាស់។" },
       sidebar: { name: "របារចំហៀង", description: "របារចំហៀងមានពណ៌សម្រាប់ទំនាក់ទំនង ជំនាញ និងភាសា។" },
+      creative: { name: "ច្នៃប្រឌិត", description: "ប្លង់បន្ទាត់ពេលវេលាពណ៌ violet ជាមួយសញ្ញាសម្គាល់សម្រាប់បទពិសោធន៍ និងការសិក្សា។" },
     },
     sections: {
       personalInfo: { title: "ព័ត៌មានផ្ទាល់ខ្លួន" },

@@ -8,10 +8,14 @@ import type { CvData, TemplateId } from "@/lib/cv/schema";
 import { useT } from "@/lib/i18n/language-context";
 import { cn } from "@/lib/utils";
 
-const translationKeyByTemplate: Record<TemplateId, "atsOneColumn" | "modern" | "sidebar"> = {
+const translationKeyByTemplate: Record<
+  TemplateId,
+  "atsOneColumn" | "modern" | "sidebar" | "creative"
+> = {
   "ats-one-column": "atsOneColumn",
   modern: "modern",
   sidebar: "sidebar",
+  creative: "creative",
 };
 
 export function TemplatePicker({ control }: { control: Control<CvData> }) {
@@ -28,7 +32,7 @@ export function TemplatePicker({ control }: { control: Control<CvData> }) {
           control={control}
           name="templateId"
           render={({ field }) => (
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               {templateIds.map((id) => {
                 const { swatch } = templateRegistry[id];
                 const label = t.templates[translationKeyByTemplate[id]];
