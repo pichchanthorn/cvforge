@@ -2,6 +2,7 @@ import {
   AlignmentType,
   BorderStyle,
   Document,
+  ImageRun,
   Packer,
   Paragraph,
   TextRun,
@@ -50,6 +51,22 @@ export async function generateCvDocx(data: CvData): Promise<Blob> {
   const { personalInfo, experience, education, skills, projects, languages, certifications } = data;
 
   const children: Paragraph[] = [];
+
+  if (personalInfo.photo) {
+    children.push(
+      new Paragraph({
+        alignment: AlignmentType.CENTER,
+        spacing: { after: 120 },
+        children: [
+          new ImageRun({
+            type: "jpg",
+            data: personalInfo.photo,
+            transformation: { width: 96, height: 96 },
+          }),
+        ],
+      }),
+    );
+  }
 
   children.push(
     new Paragraph({
