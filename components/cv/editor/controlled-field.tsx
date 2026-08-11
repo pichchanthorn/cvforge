@@ -22,13 +22,14 @@ export function TextField<T extends FieldValues>({
   placeholder,
   className,
   type = "text",
-}: BaseProps<T> & { type?: string }) {
+  disabled,
+}: BaseProps<T> & { type?: string; disabled?: boolean }) {
   return (
     <Controller
       control={control}
       name={name}
       render={({ field, fieldState }) => (
-        <Field data-invalid={fieldState.invalid} className={className}>
+        <Field data-invalid={fieldState.invalid} data-disabled={disabled} className={className}>
           <FieldLabel htmlFor={field.name}>{label}</FieldLabel>
           <Input
             {...field}
@@ -37,6 +38,7 @@ export function TextField<T extends FieldValues>({
             type={type}
             placeholder={placeholder}
             aria-invalid={fieldState.invalid}
+            disabled={disabled}
           />
           <FieldError errors={fieldState.error ? [fieldState.error] : []} />
         </Field>

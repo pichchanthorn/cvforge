@@ -216,8 +216,8 @@ export function CvEditorShell() {
         <div className={cn("flex flex-col gap-4", activeTab !== "edit" && "hidden md:flex")}>
           <TemplatePicker control={form.control} />
           <PersonalInfoSection control={form.control} />
-          <ExperienceSection control={form.control} />
-          <EducationSection control={form.control} />
+          <ExperienceSection control={form.control} setValue={form.setValue} />
+          <EducationSection control={form.control} setValue={form.setValue} />
           <SkillsSection control={form.control} />
           <ProjectsSection control={form.control} />
           <LanguagesSection control={form.control} />
