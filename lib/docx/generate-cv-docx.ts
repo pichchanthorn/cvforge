@@ -5,6 +5,7 @@ import {
   ImageRun,
   Packer,
   Paragraph,
+  ShadingType,
   Table,
   TableBorders,
   TableCell,
@@ -19,23 +20,33 @@ import { formatDateRange, groupSkills, UNGROUPED_SKILLS } from "@/lib/cv/format"
 const GRAY = "555555";
 const DARK = "1A1A1A";
 
-type HeadingAccent = { text: string; border: string };
-const HEADING_GRAY: HeadingAccent = { text: "333333", border: "CCCCCC" };
+/** Section-heading accent. `border` draws an underline (ATS/Portrait/Sidebar
+ * style); `dot` prepends a small colored square marker instead (Modern
+ * style); neither gives plain colored uppercase text (Creative style). */
+type HeadingAccent = { color: string; border?: string; dot?: boolean };
+const HEADING_GRAY: HeadingAccent = { color: "333333", border: "CCCCCC" };
 // Matches the amber accent used by the Portrait PDF/preview templates.
-const HEADING_AMBER: HeadingAccent = { text: "78350F", border: "FCD34D" };
+const HEADING_AMBER: HeadingAccent = { color: "78350F", border: "FCD34D" };
+// Matches the indigo accent + square marker used by the Modern PDF/preview templates.
+const HEADING_INDIGO_DOT: HeadingAccent = { color: "4338CA", dot: true };
 
 const PHOTO_SIZE = 96; // pt — matches the Portrait PDF template's headshot size.
 const PORTRAIT_PHOTO_COL_WIDTH = 1800; // ~1.25in in twips (DXA)
 const PORTRAIT_TEXT_COL_WIDTH = 9000; // ~6.25in in twips (DXA)
+const CONTENT_WIDTH_DXA = 10800; // Letter width (12240) minus 720-twip margins on each side.
+
+const MODERN_INDIGO = "4338CA";
+const MODERN_INDIGO_LIGHT = "E0E7FF";
 
 function sectionHeading(text: string, accent: HeadingAccent = HEADING_GRAY): Paragraph {
   return new Paragraph({
     spacing: { before: 280, after: 120 },
-    border: {
-      bottom: { style: BorderStyle.SINGLE, size: 4, color: accent.border, space: 4 },
-    },
+    border: accent.border
+      ? { bottom: { style: BorderStyle.SINGLE, size: 4, color: accent.border, space: 4 } }
+      : undefined,
     children: [
-      new TextRun({ text: text.toUpperCase(), bold: true, size: 19, color: accent.text }),
+      ...(accent.dot ? [new TextRun({ text: "■ ", size: 12, color: accent.color })] : []),
+      new TextRun({ text: text.toUpperCase(), bold: true, size: 19, color: accent.color }),
     ],
   });
 }
@@ -104,27 +115,12 @@ function headerTextParagraphs(
   return paragraphs;
 }
 
-/** The default header used by every template except Portrait: an optional
- * centered photo above the name/headline/contact, all centered. */
+/** ATS Classic's header (also the fallback for any template not yet given
+ * its own builder): name/headline/contact, centered. No photo — ATS
+ * Classic's own PDF/preview never shows one, and Word export now mirrors
+ * each template's PDF exactly rather than sharing one generic layout. */
 function buildGenericHeader(personalInfo: CvData["personalInfo"]): Paragraph[] {
   const paragraphs: Paragraph[] = [];
-
-  if (personalInfo.photo) {
-    paragraphs.push(
-      new Paragraph({
-        alignment: AlignmentType.CENTER,
-        spacing: { after: 120 },
-        children: [
-          new ImageRun({
-            type: "jpg",
-            data: personalInfo.photo,
-            transformation: { width: PHOTO_SIZE, height: PHOTO_SIZE },
-          }),
-        ],
-      }),
-    );
-  }
-
   paragraphs.push(...headerTextParagraphs(personalInfo, AlignmentType.CENTER), spacerParagraph(200));
   return paragraphs;
 }
@@ -174,14 +170,75 @@ function buildPortraitHeader(personalInfo: CvData["personalInfo"]): (Paragraph |
   return [table, spacerParagraph(160)];
 }
 
+/** The Modern template's header: a full-width indigo block (left-aligned
+ * name/headline/contact in white/light text), mirroring the PDF/preview's
+ * colored header band. docx has no element-level background color outside a
+ * table, so a single-cell borderless table with cell shading is the
+ * standard way to fill a block with color. Note this only fills the content
+ * width (inside the page's 0.5in margins), not a true edge-to-edge bleed
+ * like the PDF — Word documents don't fill past their margins without
+ * reworking the section's page margins, so this is an intentional, common
+ * approximation for Word-format headers. */
+function buildModernHeader(personalInfo: CvData["personalInfo"]): (Paragraph | Table)[] {
+  const paragraphs: Paragraph[] = [
+    new Paragraph({
+      spacing: { after: 40 },
+      children: [
+        new TextRun({ text: personalInfo.fullName || "Your Name", bold: true, size: 40, color: "FFFFFF" }),
+      ],
+    }),
+  ];
+
+  if (personalInfo.headline) {
+    paragraphs.push(
+      new Paragraph({
+        spacing: { after: 60 },
+        children: [new TextRun({ text: personalInfo.headline, size: 21, color: MODERN_INDIGO_LIGHT })],
+      }),
+    );
+  }
+
+  const contactParts = [personalInfo.email, personalInfo.phone, personalInfo.location].filter(Boolean);
+  const linkParts = personalInfo.links.map((l) => l.url).filter(Boolean);
+  const contactLine = [...contactParts, ...linkParts].join("   |   ");
+  if (contactLine) {
+    paragraphs.push(
+      new Paragraph({
+        spacing: { after: 0 },
+        children: [new TextRun({ text: contactLine, size: 18, color: MODERN_INDIGO_LIGHT })],
+      }),
+    );
+  }
+
+  const headerCell = new TableCell({
+    width: { size: CONTENT_WIDTH_DXA, type: WidthType.DXA },
+    shading: { fill: MODERN_INDIGO, type: ShadingType.CLEAR, color: "auto" },
+    margins: { top: 280, bottom: 280, left: 260, right: 260 },
+    children: paragraphs,
+  });
+
+  const table = new Table({
+    width: { size: CONTENT_WIDTH_DXA, type: WidthType.DXA },
+    columnWidths: [CONTENT_WIDTH_DXA],
+    borders: TableBorders.NONE,
+    rows: [new TableRow({ children: [headerCell] })],
+  });
+
+  return [table, spacerParagraph(200)];
+}
+
 export async function generateCvDocx(data: CvData): Promise<Blob> {
   const { personalInfo, experience, education, skills, projects, languages, certifications, templateId } = data;
-  const isPortrait = templateId === "portrait";
-  const headingAccent = isPortrait ? HEADING_AMBER : HEADING_GRAY;
 
-  const children: (Paragraph | Table)[] = isPortrait
-    ? buildPortraitHeader(personalInfo)
-    : buildGenericHeader(personalInfo);
+  const headingAccent: HeadingAccent =
+    templateId === "portrait" ? HEADING_AMBER : templateId === "modern" ? HEADING_INDIGO_DOT : HEADING_GRAY;
+
+  const children: (Paragraph | Table)[] =
+    templateId === "portrait"
+      ? buildPortraitHeader(personalInfo)
+      : templateId === "modern"
+        ? buildModernHeader(personalInfo)
+        : buildGenericHeader(personalInfo);
 
   if (personalInfo.summary) {
     children.push(bodyParagraph(personalInfo.summary, { spacingAfter: 160 }));
