@@ -49,6 +49,17 @@ const HEADING_VIOLET_PLAIN: HeadingAccent = { color: CREATIVE_VIOLET_TEXT };
 const TIMELINE_MARKER_COL_WIDTH = 500; // narrow marker column, ~0.35in
 const TIMELINE_CONTENT_COL_WIDTH = CONTENT_WIDTH_DXA - TIMELINE_MARKER_COL_WIDTH;
 
+const SIDEBAR_TEAL = "115E59";
+const SIDEBAR_TEAL_LIGHT = "99F6E4";
+const SIDEBAR_TEXT_LIGHT = "F0FDFA";
+const SIDEBAR_COL_WIDTH = 3520; // 176pt, matching the Sidebar PDF template's fixed sidebar width
+const SIDEBAR_PAGE_MARGIN = 360; // 0.25in — tighter than the standard 0.5in so the teal
+// column reads closer to the PDF's true edge-to-edge bleed (docx can't bleed past margins).
+const SIDEBAR_CONTENT_WIDTH = 12240 - SIDEBAR_PAGE_MARGIN * 2; // Letter width minus this template's own margins
+const SIDEBAR_MAIN_COL_WIDTH = SIDEBAR_CONTENT_WIDTH - SIDEBAR_COL_WIDTH;
+// Matches the underlined teal heading used by the Sidebar PDF/preview template's main column.
+const HEADING_TEAL: HeadingAccent = { color: SIDEBAR_TEAL, border: SIDEBAR_TEAL };
+
 function sectionHeading(text: string, accent: HeadingAccent = HEADING_GRAY): Paragraph {
   return new Paragraph({
     spacing: { before: 280, after: 120 },
@@ -351,7 +362,177 @@ function timelineTable(entryGroups: Paragraph[][]): Table {
   });
 }
 
+function projectEntryParagraphs(item: CvData["projects"][number]): Paragraph[] {
+  const paragraphs: Paragraph[] = [
+    bodyParagraph([item.name || "Project", item.url].filter(Boolean).join(" — "), {
+      bold: true,
+      spacingAfter: 20,
+    }),
+  ];
+  const meta = formatDateRange(item.startDate, item.endDate, false);
+  if (meta) paragraphs.push(metaLine(meta));
+  if (item.description) paragraphs.push(bodyParagraph(item.description, { spacingAfter: 20 }));
+  const tech = item.tech.filter(Boolean);
+  if (tech.length > 0) paragraphs.push(metaLine(tech.join(", ")));
+  return paragraphs;
+}
+
+/** A section heading for the Sidebar template's dark teal column: small,
+ * light-teal, uppercase, no underline — matching the PDF/preview's
+ * SideHeading style (distinct from the underlined teal heading used in the
+ * same template's white main column, see HEADING_TEAL). */
+function sidebarHeading(text: string): Paragraph {
+  return new Paragraph({
+    spacing: { before: 200, after: 60 },
+    children: [new TextRun({ text: text.toUpperCase(), bold: true, size: 15, color: SIDEBAR_TEAL_LIGHT })],
+  });
+}
+
+function sidebarText(text: string, spacingAfter = 40): Paragraph {
+  return new Paragraph({
+    spacing: { after: spacingAfter },
+    children: [new TextRun({ text, size: 16, color: SIDEBAR_TEXT_LIGHT })],
+  });
+}
+
+/** The Sidebar template's full-page layout: a dark teal column (name,
+ * headline, Contact, Skills, Languages, Certifications) beside a white
+ * column (Summary, Experience, Education, Projects) — mirroring the
+ * PDF/preview's two-column structure. Unlike every other template, this
+ * *is* the whole document body, not just a header: docx has no way to make
+ * an element stretch to fill the page height outside a table, so the
+ * entire page is one borderless single-row table. Word sizes a table row to
+ * its tallest cell and fills each cell's full rectangle with its shading,
+ * so the teal column's background automatically extends to match whichever
+ * column is taller — including across page breaks if the CV runs long. */
+function buildSidebarDocument(data: CvData): Table {
+  const { personalInfo, experience, education, skills, projects, languages, certifications } = data;
+
+  const sidebarChildren: Paragraph[] = [
+    new Paragraph({
+      spacing: { after: 40 },
+      children: [new TextRun({ text: personalInfo.fullName || "Your Name", bold: true, size: 34, color: "FFFFFF" })],
+    }),
+  ];
+  if (personalInfo.headline) {
+    sidebarChildren.push(
+      new Paragraph({
+        spacing: { after: 0 },
+        children: [new TextRun({ text: personalInfo.headline, size: 19, color: SIDEBAR_TEAL_LIGHT })],
+      }),
+    );
+  }
+
+  const contactItems = [personalInfo.email, personalInfo.phone, personalInfo.location].filter(Boolean);
+  const linkItems = personalInfo.links.map((l) => l.url).filter(Boolean);
+  if (contactItems.length > 0 || linkItems.length > 0) {
+    sidebarChildren.push(sidebarHeading("Contact"));
+    for (const item of [...contactItems, ...linkItems]) {
+      sidebarChildren.push(sidebarText(item, 20));
+    }
+  }
+
+  if (skills.length > 0) {
+    sidebarChildren.push(sidebarHeading("Skills"));
+    for (const [group, items] of groupSkills(skills)) {
+      if (group !== UNGROUPED_SKILLS) {
+        sidebarChildren.push(
+          new Paragraph({
+            spacing: { after: 0 },
+            children: [new TextRun({ text: group, bold: true, size: 15, color: SIDEBAR_TEAL_LIGHT })],
+          }),
+        );
+      }
+      sidebarChildren.push(sidebarText(items.join(", "), 40));
+    }
+  }
+
+  if (languages.length > 0) {
+    sidebarChildren.push(sidebarHeading("Languages"));
+    for (const l of languages) {
+      sidebarChildren.push(sidebarText(l.proficiency ? `${l.name} — ${l.proficiency}` : l.name, 20));
+    }
+  }
+
+  if (certifications.length > 0) {
+    sidebarChildren.push(sidebarHeading("Certifications"));
+    for (const cert of certifications) {
+      sidebarChildren.push(sidebarText([cert.name, cert.issuer].filter(Boolean).join(", "), 20));
+    }
+  }
+
+  const mainChildren: Paragraph[] = [];
+  if (personalInfo.summary) {
+    mainChildren.push(bodyParagraph(personalInfo.summary, { spacingAfter: 160 }));
+  }
+
+  if (experience.length > 0) {
+    mainChildren.push(sectionHeading("Experience", HEADING_TEAL));
+    for (const item of experience) {
+      mainChildren.push(...experienceEntryParagraphs(item));
+      mainChildren.push(spacerParagraph(100));
+    }
+  }
+
+  if (education.length > 0) {
+    mainChildren.push(sectionHeading("Education", HEADING_TEAL));
+    for (const item of education) {
+      mainChildren.push(...educationEntryParagraphs(item));
+      mainChildren.push(spacerParagraph(80));
+    }
+  }
+
+  if (projects.length > 0) {
+    mainChildren.push(sectionHeading("Projects", HEADING_TEAL));
+    for (const item of projects) {
+      mainChildren.push(...projectEntryParagraphs(item));
+      mainChildren.push(spacerParagraph(80));
+    }
+  }
+
+  const sidebarCell = new TableCell({
+    width: { size: SIDEBAR_COL_WIDTH, type: WidthType.DXA },
+    shading: { fill: SIDEBAR_TEAL, type: ShadingType.CLEAR, color: "auto" },
+    margins: { top: 400, bottom: 400, left: 260, right: 260 },
+    children: sidebarChildren,
+  });
+
+  const mainCell = new TableCell({
+    width: { size: SIDEBAR_MAIN_COL_WIDTH, type: WidthType.DXA },
+    margins: { top: 400, bottom: 400, left: 320, right: 220 },
+    children: mainChildren,
+  });
+
+  return new Table({
+    width: { size: SIDEBAR_CONTENT_WIDTH, type: WidthType.DXA },
+    columnWidths: [SIDEBAR_COL_WIDTH, SIDEBAR_MAIN_COL_WIDTH],
+    borders: TableBorders.NONE,
+    rows: [new TableRow({ children: [sidebarCell, mainCell] })],
+  });
+}
+
 export async function generateCvDocx(data: CvData): Promise<Blob> {
+  if (data.templateId === "sidebar") {
+    const doc = new Document({
+      sections: [
+        {
+          properties: {
+            page: {
+              margin: {
+                top: SIDEBAR_PAGE_MARGIN,
+                bottom: SIDEBAR_PAGE_MARGIN,
+                left: SIDEBAR_PAGE_MARGIN,
+                right: SIDEBAR_PAGE_MARGIN,
+              },
+            },
+          },
+          children: [buildSidebarDocument(data)],
+        },
+      ],
+    });
+    return Packer.toBlob(doc);
+  }
+
   const { personalInfo, experience, education, skills, projects, languages, certifications, templateId } = data;
   const isCreative = templateId === "creative";
 
@@ -423,17 +604,7 @@ export async function generateCvDocx(data: CvData): Promise<Blob> {
   if (projects.length > 0) {
     children.push(sectionHeading("Projects", headingAccent));
     for (const item of projects) {
-      children.push(
-        bodyParagraph([item.name || "Project", item.url].filter(Boolean).join(" — "), {
-          bold: true,
-          spacingAfter: 20,
-        }),
-      );
-      const meta = formatDateRange(item.startDate, item.endDate, false);
-      if (meta) children.push(metaLine(meta));
-      if (item.description) children.push(bodyParagraph(item.description, { spacingAfter: 20 }));
-      const tech = item.tech.filter(Boolean);
-      if (tech.length > 0) children.push(metaLine(tech.join(", ")));
+      children.push(...projectEntryParagraphs(item));
       children.push(new Paragraph({ spacing: { after: 80 }, children: [] }));
     }
   }
