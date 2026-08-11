@@ -35,6 +35,8 @@ export function LandingContent() {
     { id: "ats-one-column", name: t.templates.atsOneColumn.name, image: "/images/template-ats-classic.webp" },
     { id: "modern", name: t.templates.modern.name, image: "/images/template-modern.webp" },
     { id: "sidebar", name: t.templates.sidebar.name, image: "/images/template-sidebar.webp" },
+    { id: "creative", name: t.templates.creative.name, image: "/images/template-creative.webp" },
+    { id: "portrait", name: t.templates.portrait.name, image: "/images/template-portrait.webp" },
   ];
 
   return (
@@ -168,7 +170,7 @@ export function LandingContent() {
               <p className="mt-2 text-muted-foreground">{t.landing.templatesSubtitle}</p>
             </div>
 
-            <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-3">
+            <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-5">
               {templateShowcase.map(({ id, name, image }, index) => (
                 <Reveal key={id} delay={index * 100}>
                   <div className="group overflow-hidden rounded-xl border border-border bg-card shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
