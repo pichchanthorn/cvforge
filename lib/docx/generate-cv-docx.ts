@@ -38,6 +38,17 @@ const CONTENT_WIDTH_DXA = 10800; // Letter width (12240) minus 720-twip margins 
 const MODERN_INDIGO = "4338CA";
 const MODERN_INDIGO_LIGHT = "E0E7FF";
 
+const CREATIVE_VIOLET = "7C5CFF"; // timeline dot marker
+const CREATIVE_VIOLET_LIGHT = "EDE9FE"; // header rule + timeline connecting line
+const CREATIVE_VIOLET_TEXT = "5B3FD1"; // headline + section headings
+const CREATIVE_VIOLET_DARK = "2E1065"; // name
+const CREATIVE_CONTACT_GRAY = "525252";
+// Matches the plain colored heading (no underline, no marker) used by the Creative PDF/preview templates.
+const HEADING_VIOLET_PLAIN: HeadingAccent = { color: CREATIVE_VIOLET_TEXT };
+
+const TIMELINE_MARKER_COL_WIDTH = 500; // narrow marker column, ~0.35in
+const TIMELINE_CONTENT_COL_WIDTH = CONTENT_WIDTH_DXA - TIMELINE_MARKER_COL_WIDTH;
+
 function sectionHeading(text: string, accent: HeadingAccent = HEADING_GRAY): Paragraph {
   return new Paragraph({
     spacing: { before: 280, after: 120 },
@@ -227,18 +238,140 @@ function buildModernHeader(personalInfo: CvData["personalInfo"]): (Paragraph | T
   return [table, spacerParagraph(200)];
 }
 
+/** The Creative template's header: name/headline/contact centered, with a
+ * violet rule underneath — mirroring the PDF/preview's bottom-bordered
+ * header block. Each line needs its own color (dark violet name, lighter
+ * violet headline, gray contact), so this builds bespoke paragraphs rather
+ * than reusing headerTextParagraphs(). The border is attached to whichever
+ * line ends up last, since that's the only way to draw one rule under the
+ * whole block without wrapping it in a table. */
+function buildCreativeHeader(personalInfo: CvData["personalInfo"]): Paragraph[] {
+  const lines: { text: string; size: number; color: string; bold?: boolean; spacingAfter: number }[] = [
+    { text: personalInfo.fullName || "Your Name", size: 44, color: CREATIVE_VIOLET_DARK, bold: true, spacingAfter: 40 },
+  ];
+
+  if (personalInfo.headline) {
+    lines.push({ text: personalInfo.headline, size: 21, color: CREATIVE_VIOLET_TEXT, spacingAfter: 60 });
+  }
+
+  const contactParts = [personalInfo.email, personalInfo.phone, personalInfo.location].filter(Boolean);
+  const linkParts = personalInfo.links.map((l) => l.url).filter(Boolean);
+  const contactLine = [...contactParts, ...linkParts].join("   |   ");
+  if (contactLine) {
+    lines.push({ text: contactLine, size: 18, color: CREATIVE_CONTACT_GRAY, spacingAfter: 0 });
+  }
+
+  const paragraphs = lines.map(
+    (line, i) =>
+      new Paragraph({
+        alignment: AlignmentType.CENTER,
+        spacing: { after: line.spacingAfter },
+        border:
+          i === lines.length - 1
+            ? { bottom: { style: BorderStyle.SINGLE, size: 12, color: CREATIVE_VIOLET_LIGHT, space: 14 } }
+            : undefined,
+        children: [new TextRun({ text: line.text, size: line.size, color: line.color, bold: line.bold })],
+      }),
+  );
+
+  return [...paragraphs, spacerParagraph(200)];
+}
+
+function experienceEntryParagraphs(item: CvData["experience"][number]): Paragraph[] {
+  const paragraphs: Paragraph[] = [
+    bodyParagraph([item.role || "Role", item.company].filter(Boolean).join(" — "), {
+      bold: true,
+      spacingAfter: 20,
+    }),
+  ];
+  const meta = [item.location, formatDateRange(item.startDate, item.endDate, item.isCurrent)]
+    .filter(Boolean)
+    .join("   ·   ");
+  if (meta) paragraphs.push(metaLine(meta));
+  for (const bullet of item.bullets.filter(Boolean)) {
+    paragraphs.push(bulletParagraph(bullet));
+  }
+  return paragraphs;
+}
+
+function educationEntryParagraphs(item: CvData["education"][number]): Paragraph[] {
+  const paragraphs: Paragraph[] = [
+    bodyParagraph(item.institution || "Institution", { bold: true, spacingAfter: 20 }),
+  ];
+  const meta = [
+    [item.degree, item.fieldOfStudy].filter(Boolean).join(", "),
+    item.location,
+    formatDateRange(item.startDate, item.endDate, item.isCurrent),
+  ]
+    .filter(Boolean)
+    .join("   ·   ");
+  if (meta) paragraphs.push(metaLine(meta));
+  if (item.description) paragraphs.push(bodyParagraph(item.description, { spacingAfter: 0 }));
+  return paragraphs;
+}
+
+/** Wraps a list of entries (Experience/Education) in a borderless two-column
+ * table — a narrow marker column with a violet dot, and a content column —
+ * with a colored line drawn between the columns via the table's
+ * insideVertical border. Because that border applies to the whole table,
+ * not per row, it renders as one continuous line running down through every
+ * entry, approximating the PDF/preview's border-left timeline with a dot
+ * positioned on top of it. This is the closest practical approximation:
+ * docx has no reliable freeform shape/absolute-positioning API to place a
+ * dot exactly on a line the way CSS does. */
+function timelineTable(entryGroups: Paragraph[][]): Table {
+  const rows = entryGroups.map(
+    (entryParagraphs) =>
+      new TableRow({
+        children: [
+          new TableCell({
+            width: { size: TIMELINE_MARKER_COL_WIDTH, type: WidthType.DXA },
+            margins: { top: 60, bottom: 200 },
+            children: [
+              new Paragraph({
+                alignment: AlignmentType.RIGHT,
+                children: [new TextRun({ text: "●", size: 16, color: CREATIVE_VIOLET })],
+              }),
+            ],
+          }),
+          new TableCell({
+            width: { size: TIMELINE_CONTENT_COL_WIDTH, type: WidthType.DXA },
+            margins: { left: 200, bottom: 200 },
+            children: entryParagraphs,
+          }),
+        ],
+      }),
+  );
+
+  return new Table({
+    width: { size: CONTENT_WIDTH_DXA, type: WidthType.DXA },
+    columnWidths: [TIMELINE_MARKER_COL_WIDTH, TIMELINE_CONTENT_COL_WIDTH],
+    borders: { ...TableBorders.NONE, insideVertical: { style: BorderStyle.SINGLE, size: 8, color: CREATIVE_VIOLET_LIGHT } },
+    rows,
+  });
+}
+
 export async function generateCvDocx(data: CvData): Promise<Blob> {
   const { personalInfo, experience, education, skills, projects, languages, certifications, templateId } = data;
+  const isCreative = templateId === "creative";
 
   const headingAccent: HeadingAccent =
-    templateId === "portrait" ? HEADING_AMBER : templateId === "modern" ? HEADING_INDIGO_DOT : HEADING_GRAY;
+    templateId === "portrait"
+      ? HEADING_AMBER
+      : templateId === "modern"
+        ? HEADING_INDIGO_DOT
+        : isCreative
+          ? HEADING_VIOLET_PLAIN
+          : HEADING_GRAY;
 
   const children: (Paragraph | Table)[] =
     templateId === "portrait"
       ? buildPortraitHeader(personalInfo)
       : templateId === "modern"
         ? buildModernHeader(personalInfo)
-        : buildGenericHeader(personalInfo);
+        : isCreative
+          ? buildCreativeHeader(personalInfo)
+          : buildGenericHeader(personalInfo);
 
   if (personalInfo.summary) {
     children.push(bodyParagraph(personalInfo.summary, { spacingAfter: 160 }));
@@ -246,38 +379,27 @@ export async function generateCvDocx(data: CvData): Promise<Blob> {
 
   if (experience.length > 0) {
     children.push(sectionHeading("Experience", headingAccent));
-    for (const item of experience) {
-      children.push(
-        bodyParagraph(
-          [item.role || "Role", item.company].filter(Boolean).join(" — "),
-          { bold: true, spacingAfter: 20 },
-        ),
-      );
-      const meta = [item.location, formatDateRange(item.startDate, item.endDate, item.isCurrent)]
-        .filter(Boolean)
-        .join("   ·   ");
-      if (meta) children.push(metaLine(meta));
-      for (const bullet of item.bullets.filter(Boolean)) {
-        children.push(bulletParagraph(bullet));
+    if (isCreative) {
+      children.push(timelineTable(experience.map(experienceEntryParagraphs)));
+      children.push(spacerParagraph(160));
+    } else {
+      for (const item of experience) {
+        children.push(...experienceEntryParagraphs(item));
+        children.push(new Paragraph({ spacing: { after: 100 }, children: [] }));
       }
-      children.push(new Paragraph({ spacing: { after: 100 }, children: [] }));
     }
   }
 
   if (education.length > 0) {
     children.push(sectionHeading("Education", headingAccent));
-    for (const item of education) {
-      children.push(bodyParagraph(item.institution || "Institution", { bold: true, spacingAfter: 20 }));
-      const meta = [
-        [item.degree, item.fieldOfStudy].filter(Boolean).join(", "),
-        item.location,
-        formatDateRange(item.startDate, item.endDate, item.isCurrent),
-      ]
-        .filter(Boolean)
-        .join("   ·   ");
-      if (meta) children.push(metaLine(meta));
-      if (item.description) children.push(bodyParagraph(item.description, { spacingAfter: 100 }));
-      else children.push(new Paragraph({ spacing: { after: 80 }, children: [] }));
+    if (isCreative) {
+      children.push(timelineTable(education.map(educationEntryParagraphs)));
+      children.push(spacerParagraph(160));
+    } else {
+      for (const item of education) {
+        children.push(...educationEntryParagraphs(item));
+        children.push(new Paragraph({ spacing: { after: 80 }, children: [] }));
+      }
     }
   }
 
