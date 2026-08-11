@@ -10,12 +10,13 @@ import { cn } from "@/lib/utils";
 
 const translationKeyByTemplate: Record<
   TemplateId,
-  "atsOneColumn" | "modern" | "sidebar" | "creative"
+  "atsOneColumn" | "modern" | "sidebar" | "creative" | "portrait"
 > = {
   "ats-one-column": "atsOneColumn",
   modern: "modern",
   sidebar: "sidebar",
   creative: "creative",
+  portrait: "portrait",
 };
 
 export function TemplatePicker({ control }: { control: Control<CvData> }) {

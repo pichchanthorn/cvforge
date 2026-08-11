@@ -21,6 +21,8 @@ export const personalInfoSchema = z.object({
   location: z.string().max(120),
   summary: z.string().max(800),
   links: z.array(linkSchema).max(5),
+  /** JPEG data URL from resizeImageToSquareDataUrl(); "" means no photo. */
+  photo: z.string().max(300_000),
 });
 
 export const experienceItemSchema = z.object({
@@ -79,7 +81,13 @@ export const certificationItemSchema = z.object({
   credentialUrl: z.string().max(300),
 });
 
-export const templateIds = ["ats-one-column", "modern", "sidebar", "creative"] as const;
+export const templateIds = [
+  "ats-one-column",
+  "modern",
+  "sidebar",
+  "creative",
+  "portrait",
+] as const;
 export type TemplateId = (typeof templateIds)[number];
 
 export const cvDataSchema = z.object({
@@ -115,6 +123,7 @@ export function createEmptyCv(): CvData {
       location: "",
       summary: "",
       links: [],
+      photo: "",
     },
     experience: [],
     education: [],

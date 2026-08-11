@@ -5,10 +5,12 @@ import { AtsOneColumnPreview } from "@/components/cv/preview/ats-one-column";
 import { ModernPreview } from "@/components/cv/preview/modern";
 import { SidebarPreview } from "@/components/cv/preview/sidebar";
 import { CreativePreview } from "@/components/cv/preview/creative";
+import { PortraitPreview } from "@/components/cv/preview/portrait";
 import { AtsOneColumnDocument } from "@/components/pdf/templates/ats-one-column";
 import { ModernDocument } from "@/components/pdf/templates/modern";
 import { SidebarDocument } from "@/components/pdf/templates/sidebar";
 import { CreativeDocument } from "@/components/pdf/templates/creative";
+import { PortraitDocument } from "@/components/pdf/templates/portrait";
 
 export { templateIds };
 export type { TemplateId };
@@ -38,5 +40,10 @@ export const templateRegistry: Record<
     PreviewComponent: CreativePreview,
     PdfComponent: CreativeDocument,
     swatch: ["#7c5cff", "#ede9fe"],
+  },
+  portrait: {
+    PreviewComponent: PortraitPreview,
+    PdfComponent: PortraitDocument,
+    swatch: ["#b45309", "#fef3c7"],
   },
 };

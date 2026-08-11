@@ -1,5 +1,8 @@
-/** Center-crops an uploaded image to a square and re-encodes it small enough
- * to live comfortably in localStorage (there's no server to upload to). */
+/** Crops an uploaded image to a square and re-encodes it small enough to
+ * live comfortably in localStorage (there's no server to upload to).
+ * Crops are horizontally centered but top-aligned vertically, since these
+ * are almost always headshots — a portrait photo's subject sits in the
+ * upper part of the frame, and a center-crop tends to cut off the head. */
 export function resizeImageToSquareDataUrl(file: File, size = 256, quality = 0.85): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -10,7 +13,7 @@ export function resizeImageToSquareDataUrl(file: File, size = 256, quality = 0.8
       img.onload = () => {
         const side = Math.min(img.width, img.height);
         const sx = (img.width - side) / 2;
-        const sy = (img.height - side) / 2;
+        const sy = 0;
 
         const canvas = document.createElement("canvas");
         canvas.width = size;

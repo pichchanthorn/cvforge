@@ -221,6 +221,7 @@ export const translations = {
       modern: { name: "Modern", description: "A confident color header with clean section breaks." },
       sidebar: { name: "Sidebar", description: "A colored sidebar for contact, skills, and languages." },
       creative: { name: "Creative", description: "A violet timeline layout with markers for experience and education." },
+      portrait: { name: "Portrait", description: "A headshot beside your name, single-column body below." },
     },
     sections: {
       personalInfo: { title: "Personal info" },
@@ -289,6 +290,11 @@ export const translations = {
         credentialUrl: "Credential URL (optional)",
       },
       personalInfoFields: {
+        photo: "Photo",
+        addPhoto: "Add photo",
+        changePhoto: "Change photo",
+        removePhoto: "Remove photo",
+        invalidPhoto: "Couldn't use that photo. Try a different image.",
         fullName: "Full name",
         headline: "Headline",
         headlinePlaceholder: "e.g. Frontend Developer",
@@ -525,6 +531,7 @@ export const translations = {
       modern: { name: "ទាន់សម័យ", description: "ក្បាលទំព័រពណ៌មានទំនុកចិត្ត ជាមួយផ្នែកនីមួយៗច្បាស់លាស់។" },
       sidebar: { name: "របារចំហៀង", description: "របារចំហៀងមានពណ៌សម្រាប់ទំនាក់ទំនង ជំនាញ និងភាសា។" },
       creative: { name: "ច្នៃប្រឌិត", description: "ប្លង់បន្ទាត់ពេលវេលាពណ៌ violet ជាមួយសញ្ញាសម្គាល់សម្រាប់បទពិសោធន៍ និងការសិក្សា។" },
+      portrait: { name: "រូបភាព", description: "រូបថតមុខនៅជាប់ឈ្មោះអ្នក ជាមួយខ្លឹមសារជួរឈរតែមួយខាងក្រោម។" },
     },
     sections: {
       personalInfo: { title: "ព័ត៌មានផ្ទាល់ខ្លួន" },
@@ -593,6 +600,11 @@ export const translations = {
         credentialUrl: "URL លិខិតបញ្ជាក់ (ស្រេចចិត្ត)",
       },
       personalInfoFields: {
+        photo: "រូបភាព",
+        addPhoto: "បន្ថែមរូបភាព",
+        changePhoto: "ប្តូររូបភាព",
+        removePhoto: "លុបរូបភាព",
+        invalidPhoto: "មិនអាចប្រើរូបភាពនោះបានទេ។ សូមសាកល្បងរូបភាពផ្សេង។",
         fullName: "ឈ្មោះពេញ",
         headline: "តួនាទី/ចំណងជើង",
         headlinePlaceholder: "ឧ. Frontend Developer",
