@@ -15,6 +15,7 @@ export function createSampleCv(): CvData {
         { id: newId(), label: "LinkedIn", url: "linkedin.com/in/pichchanthorn" },
         { id: newId(), label: "Portfolio", url: "pichchanthorn.me" },
       ],
+      photo: "",
     },
     experience: [
       {

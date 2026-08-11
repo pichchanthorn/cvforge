@@ -1,16 +1,21 @@
 "use client";
 
-import { useFieldArray, type Control } from "react-hook-form";
+import { useRef } from "react";
+import { Controller, useFieldArray, type Control } from "react-hook-form";
+import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { PlusIcon, Trash2Icon } from "lucide-react";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { PlusIcon, Trash2Icon, CameraIcon, XIcon, UserIcon } from "lucide-react";
 import { TextField, TextareaField } from "@/components/cv/editor/controlled-field";
 import { newId, type CvData } from "@/lib/cv/schema";
 import { useT } from "@/lib/i18n/language-context";
+import { resizeImageToSquareDataUrl } from "@/lib/image/resize-image";
 
 export function PersonalInfoSection({ control }: { control: Control<CvData> }) {
   const t = useT();
   const f = t.sections.personalInfoFields;
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const { fields, append, remove } = useFieldArray({
     control,
     name: "personalInfo.links",
@@ -22,6 +27,61 @@ export function PersonalInfoSection({ control }: { control: Control<CvData> }) {
         <CardTitle>{t.sections.personalInfo.title}</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
+        <Controller
+          control={control}
+          name="personalInfo.photo"
+          render={({ field }) => (
+            <div className="flex items-center gap-4">
+              <Avatar size="lg">
+                {field.value && <AvatarImage src={field.value} alt="" />}
+                <AvatarFallback>
+                  <UserIcon className="size-4 text-muted-foreground" />
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex flex-col gap-2">
+                <div className="flex gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    <CameraIcon className="size-4" />
+                    {field.value ? f.changePhoto : f.addPhoto}
+                  </Button>
+                  {field.value && (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => field.onChange("")}
+                    >
+                      <XIcon className="size-4" />
+                      {f.removePhoto}
+                    </Button>
+                  )}
+                </div>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    e.target.value = "";
+                    if (!file) return;
+                    try {
+                      field.onChange(await resizeImageToSquareDataUrl(file, 500, 0.8));
+                    } catch {
+                      toast.error(f.invalidPhoto);
+                    }
+                  }}
+                />
+              </div>
+            </div>
+          )}
+        />
+
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <TextField control={control} name="personalInfo.fullName" label={f.fullName} />
           <TextField
