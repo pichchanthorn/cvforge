@@ -165,7 +165,7 @@ export function CvEditorShell() {
         </div>
         <div className="flex items-center gap-3">
           <span
-            className="hidden items-center gap-1.5 text-xs text-muted-foreground sm:inline-flex"
+            className="inline-flex items-center gap-1.5 text-xs text-muted-foreground"
             aria-live="polite"
           >
             {/* Kept mounted at all times so fading it in never shifts the header. */}

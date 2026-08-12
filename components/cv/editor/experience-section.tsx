@@ -1,6 +1,7 @@
 "use client";
 
 import { Controller, useFieldArray, type Control, type UseFormSetValue } from "react-hook-form";
+import { BriefcaseIcon } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { SectionCard, ItemCard } from "@/components/cv/editor/section-card";
 import { TextField, StringListField } from "@/components/cv/editor/controlled-field";
@@ -36,6 +37,7 @@ export function ExperienceSection({
       addLabel={s.addLabel}
       isEmpty={fields.length === 0}
       emptyLabel={s.emptyLabel}
+      emptyIcon={<BriefcaseIcon className="size-4 shrink-0 opacity-70" aria-hidden />}
     >
       {fields.map((field, index) => (
         <ItemCard key={field.id} onRemove={() => remove(index)} removeLabel={t.common.remove}>
