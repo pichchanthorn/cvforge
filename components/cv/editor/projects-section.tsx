@@ -1,6 +1,7 @@
 "use client";
 
 import { useFieldArray, type Control } from "react-hook-form";
+import { FolderKanbanIcon } from "lucide-react";
 import { SectionCard, ItemCard } from "@/components/cv/editor/section-card";
 import { TextField, TextareaField, StringListField } from "@/components/cv/editor/controlled-field";
 import { newId, type CvData } from "@/lib/cv/schema";
@@ -28,6 +29,7 @@ export function ProjectsSection({ control }: { control: Control<CvData> }) {
       addLabel={s.addLabel}
       isEmpty={fields.length === 0}
       emptyLabel={s.emptyLabel}
+      emptyIcon={<FolderKanbanIcon className="size-4 shrink-0 opacity-70" aria-hidden />}
     >
       {fields.map((field, index) => (
         <ItemCard key={field.id} onRemove={() => remove(index)} removeLabel={t.common.remove}>

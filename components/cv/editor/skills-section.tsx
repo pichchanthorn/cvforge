@@ -1,7 +1,7 @@
 "use client";
 
 import { useFieldArray, type Control } from "react-hook-form";
-import { Trash2Icon } from "lucide-react";
+import { SparklesIcon, Trash2Icon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SectionCard } from "@/components/cv/editor/section-card";
 import { TextField } from "@/components/cv/editor/controlled-field";
@@ -21,6 +21,7 @@ export function SkillsSection({ control }: { control: Control<CvData> }) {
       addLabel={s.addLabel}
       isEmpty={fields.length === 0}
       emptyLabel={s.emptyLabel}
+      emptyIcon={<SparklesIcon className="size-4 shrink-0 opacity-70" aria-hidden />}
     >
       <div className="flex flex-col gap-2">
         {fields.map((field, index) => (
