@@ -148,13 +148,20 @@ export function DashboardContent() {
             </div>
           ) : (
             <Card className="mt-3 max-w-md border-dashed shadow-none">
-              <CardContent className="flex flex-col items-start gap-3">
-                <p className="text-sm font-medium">{t.dashboard.noCvTitle}</p>
-                <p className="text-sm text-muted-foreground">{t.dashboard.noCvBody}</p>
-                <Button size="sm" nativeButton={false} render={<Link href="/editor" />}>
-                  <PlusIcon className="size-4" />
-                  {t.dashboard.createCv}
-                </Button>
+              <CardContent className="flex items-start gap-4">
+                <span className="inline-flex size-11 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground">
+                  <FileTextIcon className="size-5" />
+                </span>
+                <div className="flex flex-col items-start gap-3">
+                  <div>
+                    <p className="text-sm font-medium">{t.dashboard.noCvTitle}</p>
+                    <p className="text-sm text-muted-foreground">{t.dashboard.noCvBody}</p>
+                  </div>
+                  <Button size="sm" nativeButton={false} render={<Link href="/editor" />}>
+                    <PlusIcon className="size-4" />
+                    {t.dashboard.createCv}
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           )}
