@@ -30,11 +30,12 @@ CVForge helps you build a clean, ATS-friendly resume in minutes. Pick a template
 
 ## Tech Stack
 
-- **Framework:** [Next.js](https://nextjs.org) (App Router)
+- **Framework:** [Next.js](https://nextjs.org) (App Router, static export)
 - **Language:** TypeScript
 - **Styling:** Tailwind CSS
 - **Storage:** Browser `localStorage` (no backend/database)
-- **Deployment:** Vercel
+- **Deployment:** GitHub Actions → GitHub Pages
+- **Domain:** Custom domain (`cvforge.pichchanthorn.me`) via Namecheap DNS, pointed to GitHub Pages
 
 ## Getting Started
 
