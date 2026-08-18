@@ -7,7 +7,9 @@ import {
   projectItemSchema,
   languageItemSchema,
   type CvData,
-} from "@/lib/cv/schema";
+  // Relative import (not the "@/" alias) so this file can be imported
+  // as-is from workers/ats-match, which has no path-alias config of its own.
+} from "./schema";
 
 /**
  * The subset of CvData sent to the ATS Match worker. Deliberately excludes
@@ -72,4 +74,28 @@ export function toAtsMatchPayload(cv: CvData): AtsMatchCv {
     })),
     languages: cv.languages.map(({ name }) => ({ name })),
   };
+}
+
+/**
+ * The full wire contract with the ATS Match worker. Shared by the frontend
+ * (building the request) and the worker (validating it) so the two sides
+ * can't drift.
+ */
+export const atsMatchRequestSchema = z.object({
+  jobDescription: z.string().min(1).max(10_000),
+  cv: atsMatchCvSchema,
+  turnstileToken: z.string().min(1),
+});
+export type AtsMatchRequest = z.infer<typeof atsMatchRequestSchema>;
+
+export interface AtsMatchResponse {
+  score: number; // 0-100
+  matchedKeywords: string[];
+  missingKeywords: string[];
+  suggestions: string[];
+}
+
+export interface AtsMatchError {
+  error: string;
+  code: "rate_limited" | "invalid_input" | "upstream_error";
 }

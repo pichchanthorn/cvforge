@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Self-contained Worker package with its own tooling/tsconfig — not part
+    // of the Next.js app's lint scope.
+    "workers/**",
   ]),
 ]);
 

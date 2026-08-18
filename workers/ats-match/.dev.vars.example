@@ -1,0 +1,13 @@
+# Copy to .dev.vars for local `wrangler dev` testing (gitignored, never commit real secrets).
+# In production these are set via `wrangler secret put <NAME>`, not this file.
+
+# Leave unset to skip Turnstile verification (dev-mode fallback, logs a warning).
+# For a real local test, use Cloudflare's public test secret key — always
+# validates successfully against the real siteverify endpoint, no account
+# needed: https://developers.cloudflare.com/turnstile/troubleshooting/testing/
+TURNSTILE_SECRET_KEY=
+
+# Not used yet — the AI call is mocked (see src/mock-match.ts) until real
+# credits are purchased. Will be required once ai-provider.ts is swapped
+# to a real Anthropic call.
+AI_API_KEY=
