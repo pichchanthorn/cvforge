@@ -1,36 +1,76 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CVForge
+
+A modern, professional, ATS-friendly CV and resume builder built with Next.js, TypeScript, and Tailwind CSS.
+
+**Live app:** [cvforge.pichchanthorn.me](https://cvforge.pichchanthorn.me/)
+
+![Next.js](https://img.shields.io/badge/Next.js-black?logo=next.js)
+![TypeScript](https://img.shields.io/badge/TypeScript-blue?logo=typescript)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?logo=tailwind-css&logoColor=white)
+
+## About
+
+CVForge helps you build a clean, ATS-friendly resume in minutes. Pick a template, fill in your details, and export straight to PDF or Word — all your data stays in your browser via `localStorage`, so there's no account and no server-side storage.
+
+## Features
+
+- 🎨 Multiple resume templates, including Creative and Portrait layouts
+- 📄 Export to PDF and Word (`.docx`)
+- 💾 Auto-save to `localStorage` — your progress is never lost on refresh
+- 📱 Fully responsive, mobile-friendly editor
+- 🌐 Bilingual support (English / Khmer)
+- ✅ ATS-friendly formatting out of the box
+
+## Screenshots
+
+<!-- Add screenshots here, e.g.: -->
+<!-- ![Dashboard](./public/screenshots/dashboard.png) -->
+<!-- ![Editor](./public/screenshots/editor.png) -->
+<!-- ![Templates](./public/screenshots/templates.png) -->
+
+## Tech Stack
+
+- **Framework:** [Next.js](https://nextjs.org) (App Router)
+- **Language:** TypeScript
+- **Styling:** Tailwind CSS
+- **Storage:** Browser `localStorage` (no backend/database)
+- **Deployment:** Vercel
 
 ## Getting Started
 
-First, run the development server:
+Clone the repo and install dependencies:
+
+```bash
+git clone https://github.com/pichchanthorn/cvforge.git
+cd cvforge
+npm install
+```
+
+Run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to view it in your browser. The page auto-updates as you edit files inside `app/`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Roadmap
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- [ ] AI-powered content suggestions (ATS keyword matching, cover letter generation)
+- [ ] Additional resume templates
+- [ ] Khmer-English bilingual resume export
 
-## Learn More
+## Contributing
 
-To learn more about Next.js, take a look at the following resources:
+This is currently a personal project, but suggestions and issues are welcome — feel free to open an issue or pull request.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## License
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+This project is currently unlicensed for reuse. Contact the author for permissions.
 
-## Deploy on Vercel
+## Author
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**Pich Chanthorn**
+- Portfolio: [pichchanthorn.me](https://pichchanthorn.me)
+- LinkedIn: [linkedin.com/in/pichchanthorn](https://www.linkedin.com/in/pichchanthorn)
+- GitHub: [@pichchanthorn](https://github.com/pichchanthorn)
