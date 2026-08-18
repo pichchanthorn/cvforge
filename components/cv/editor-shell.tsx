@@ -176,7 +176,11 @@ export function CvEditorShell() {
                 saveStatus === "saved" ? "scale-100 opacity-100" : "scale-75 opacity-0",
               )}
             />
-            {saveStatus === "saving" ? t.editor.saving : t.editor.savedLocally}
+            {/* Text hidden below ~360px so the header's icon buttons never
+                overflow; the checkmark alone still confirms a save there. */}
+            <span className="hidden min-[360px]:inline">
+              {saveStatus === "saving" ? t.editor.saving : t.editor.savedLocally}
+            </span>
           </span>
           <ThemeToggle />
           <LanguageSwitcher />

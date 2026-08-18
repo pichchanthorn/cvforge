@@ -28,7 +28,7 @@ export function ModernPreview({ data }: { data: CvData }) {
           <p className="mt-1 text-sm text-indigo-100">{personalInfo.headline}</p>
         )}
         {(contactParts.length > 0 || personalInfo.links.length > 0) && (
-          <p className="mt-3 text-xs text-indigo-100">
+          <p className="mt-3 text-xs break-words text-indigo-100">
             {contactParts.join("  ·  ")}
             {contactParts.length > 0 && personalInfo.links.length > 0 && "  ·  "}
             {personalInfo.links.map((link, i) => (
@@ -55,7 +55,7 @@ export function ModernPreview({ data }: { data: CvData }) {
               {experience.map((item) => (
                 <div key={item.id}>
                   <div className="flex items-baseline justify-between gap-2">
-                    <p className="text-[13px] font-semibold text-neutral-900">
+                    <p className="min-w-0 break-words text-[13px] font-semibold text-neutral-900">
                       {item.role || "Role"}
                       {item.company && (
                         <span className="font-normal text-neutral-700"> · {item.company}</span>
@@ -90,7 +90,7 @@ export function ModernPreview({ data }: { data: CvData }) {
               {education.map((item) => (
                 <div key={item.id}>
                   <div className="flex items-baseline justify-between gap-2">
-                    <p className="text-[13px] font-semibold text-neutral-900">
+                    <p className="min-w-0 break-words text-[13px] font-semibold text-neutral-900">
                       {item.institution || "Institution"}
                     </p>
                     <p className="shrink-0 text-[11px] text-neutral-500">
