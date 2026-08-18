@@ -110,7 +110,7 @@ export function SidebarPreview({ data }: { data: CvData }) {
               {experience.map((item) => (
                 <div key={item.id}>
                   <div className="flex items-baseline justify-between gap-2">
-                    <p className="text-[13px] font-semibold text-neutral-900">
+                    <p className="min-w-0 break-words text-[13px] font-semibold text-neutral-900">
                       {item.role || "Role"}
                       {item.company && (
                         <span className="font-normal text-neutral-700"> · {item.company}</span>
@@ -145,7 +145,7 @@ export function SidebarPreview({ data }: { data: CvData }) {
               {education.map((item) => (
                 <div key={item.id}>
                   <div className="flex items-baseline justify-between gap-2">
-                    <p className="text-[13px] font-semibold text-neutral-900">
+                    <p className="min-w-0 break-words text-[13px] font-semibold text-neutral-900">
                       {item.institution || "Institution"}
                     </p>
                     <p className="shrink-0 text-[11px] text-neutral-500">
