@@ -231,6 +231,8 @@ export const translations = {
       errorInvalidInput: "Something went wrong with that request. Please try again.",
       errorUpstream: "Couldn't reach the match service. Please try again.",
       turnstileDevNotice: "Verification skipped (dev mode).",
+      turnstileWidgetError: "Verification failed to load.",
+      turnstileRetry: "Retry",
     },
     templates: {
       sectionTitle: "Template",
@@ -559,6 +561,8 @@ export const translations = {
       errorInvalidInput: "មានបញ្ហាជាមួយសំណើនោះ។ សូមព្យាយាមម្តងទៀត។",
       errorUpstream: "មិនអាចទាក់ទងសេវាផ្គូផ្គងបានទេ។ សូមព្យាយាមម្តងទៀត។",
       turnstileDevNotice: "រំលងការផ្ទៀងផ្ទាត់ (dev mode)។",
+      turnstileWidgetError: "ការផ្ទៀងផ្ទាត់មិនអាចផ្ទុកបានទេ។",
+      turnstileRetry: "ព្យាយាមម្តងទៀត",
     },
     templates: {
       sectionTitle: "គំរូ",
