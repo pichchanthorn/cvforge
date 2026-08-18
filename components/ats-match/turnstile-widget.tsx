@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { InfoIcon } from "lucide-react";
 import { useT } from "@/lib/i18n/language-context";
 
 declare global {
@@ -69,7 +70,12 @@ export function TurnstileWidget({ onToken }: { onToken: (token: string) => void 
   }, []);
 
   if (!SITE_KEY) {
-    return <p className="text-xs text-muted-foreground">{t.atsMatch.turnstileDevNotice}</p>;
+    return (
+      <div className="flex items-center gap-1.5 rounded-lg border border-dashed border-border px-2.5 py-1.5 text-xs text-muted-foreground">
+        <InfoIcon className="size-3.5 shrink-0" aria-hidden />
+        <span>{t.atsMatch.turnstileDevNotice}</span>
+      </div>
+    );
   }
 
   return <div ref={containerRef} data-loaded={loaded} />;

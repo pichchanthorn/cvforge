@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Loader2Icon, SearchCheckIcon } from "lucide-react";
+import { Loader2Icon, SearchCheckIcon, TriangleAlertIcon } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -13,6 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 import { TurnstileWidget } from "@/components/ats-match/turnstile-widget";
 import { toAtsMatchPayload } from "@/lib/cv/ats-match";
 import { fetchAtsMatch } from "@/lib/cv/ats-match-client";
@@ -106,17 +107,45 @@ export function AtsMatchSheet({ cv }: { cv: CvData }) {
             )}
           </Button>
 
-          {error && (
-            <p className="text-sm text-destructive" role="alert">
-              {errorMessage(error.code)}
-            </p>
+          {error && !loading && (
+            <div
+              className="flex items-start gap-2 rounded-lg border border-destructive/20 bg-destructive/10 p-3 text-sm text-destructive dark:border-destructive/40"
+              role="alert"
+            >
+              <TriangleAlertIcon className="mt-0.5 size-4 shrink-0" aria-hidden />
+              <span>{errorMessage(error.code)}</span>
+            </div>
           )}
 
           {!result && !error && !loading && (
             <p className="text-sm text-muted-foreground">{s.emptyState}</p>
           )}
 
-          {result && (
+          {loading && (
+            <div className="flex flex-col gap-4" aria-hidden>
+              <div className="flex flex-col gap-1.5">
+                <Skeleton className="h-4 w-24" />
+                <Skeleton className="h-9 w-20" />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <Skeleton className="h-4 w-32" />
+                <div className="flex flex-wrap gap-1.5">
+                  <Skeleton className="h-5 w-16" />
+                  <Skeleton className="h-5 w-20" />
+                  <Skeleton className="h-5 w-14" />
+                </div>
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <Skeleton className="h-4 w-28" />
+                <div className="flex flex-wrap gap-1.5">
+                  <Skeleton className="h-5 w-20" />
+                  <Skeleton className="h-5 w-16" />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {result && !loading && (
             <div className="flex flex-col gap-4">
               <div>
                 <p className="text-sm font-medium">{s.scoreLabel}</p>
