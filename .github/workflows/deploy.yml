@@ -30,6 +30,8 @@ jobs:
       - uses: actions/configure-pages@v5
 
       - run: npm run build
+        env:
+          NEXT_PUBLIC_TURNSTILE_SITE_KEY: ${{ secrets.NEXT_PUBLIC_TURNSTILE_SITE_KEY }}
 
       - uses: actions/upload-pages-artifact@v3
         with:

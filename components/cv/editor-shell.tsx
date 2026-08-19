@@ -30,6 +30,7 @@ import { SkillsSection } from "@/components/cv/editor/skills-section";
 import { ProjectsSection } from "@/components/cv/editor/projects-section";
 import { LanguagesSection } from "@/components/cv/editor/languages-section";
 import { CertificationsSection } from "@/components/cv/editor/certifications-section";
+import { AtsMatchSheet } from "@/components/ats-match/ats-match-sheet";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Logo } from "@/components/logo";
@@ -163,7 +164,7 @@ export function CvEditorShell() {
             aria-label={t.editor.cvTitleLabel}
           />
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center justify-end gap-3">
           <span
             className="inline-flex items-center gap-1.5 text-xs text-muted-foreground"
             aria-live="polite"
@@ -182,6 +183,7 @@ export function CvEditorShell() {
               {saveStatus === "saving" ? t.editor.saving : t.editor.savedLocally}
             </span>
           </span>
+          <AtsMatchSheet cv={activeData} />
           <ThemeToggle />
           <LanguageSwitcher />
           <DropdownMenu>
