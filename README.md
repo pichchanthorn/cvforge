@@ -55,6 +55,18 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) to view it in your browser. The page auto-updates as you edit files inside `app/`.
 
+## Preview Deployments
+
+The repo is connected to Cloudflare Pages for branch previews, separate from the `main` → GitHub Pages production deploy. Every branch pushed gets its own automatic preview build at:
+
+```
+https://<branch-name-with-slashes-as-dashes>.cvforge-ao2.pages.dev
+```
+
+For example, `feature/ats-match` is live at **[feature-ats-match.cvforge-ao2.pages.dev](https://feature-ats-match.cvforge-ao2.pages.dev)**.
+
+These are read-only preview builds — nothing here touches the live `cvforge.pichchanthorn.me` domain or the `main` branch's GitHub Pages deployment. Preview-specific environment variables (e.g. `NEXT_PUBLIC_ATS_MATCH_API_URL`, `NEXT_PUBLIC_TURNSTILE_SITE_KEY`) are configured in the Cloudflare Pages project settings, scoped separately from Production.
+
 ## Roadmap
 
 - [ ] AI-powered content suggestions (ATS keyword matching, cover letter generation)
