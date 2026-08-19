@@ -67,9 +67,24 @@ For example, `feature/ats-match` is live at **[feature-ats-match.cvforge-ao2.pag
 
 These are read-only preview builds — nothing here touches the live `cvforge.pichchanthorn.me` domain or the `main` branch's GitHub Pages deployment. Preview-specific environment variables (e.g. `NEXT_PUBLIC_ATS_MATCH_API_URL`, `NEXT_PUBLIC_TURNSTILE_SITE_KEY`) are configured in the Cloudflare Pages project settings, scoped separately from Production.
 
+## In Progress: AI-Powered ATS Match
+
+An in-editor panel that scores how well your CV matches a pasted job description, with matched/missing keyword highlights and suggestions — built as a separate Cloudflare Worker (`workers/ats-match/`) to keep the frontend on static export while adding a real backend for this one feature.
+
+**Status:** feature-complete end-to-end in demo mode, not yet merged to `main`.
+
+- ✅ Cloudflare Worker deployed, with real rate-limiting (5 req/IP/min) and real Cloudflare Turnstile bot verification
+- ✅ Frontend Sheet UI in the editor — loading states, error handling, full mobile responsiveness (300–375px)
+- ✅ Verified end-to-end on the preview deployment above
+- ⏳ AI matching logic is currently **mocked** (keyword overlap, not a real model call) — pending Anthropic API credit purchase before the real Claude API call is wired in
+- ⏳ Not yet merged to `main` / not on the production domain
+
+Track progress on the [`feature/ats-match` branch](https://github.com/pichchanthorn/cvforge/tree/feature/ats-match) and its [pull request](https://github.com/pichchanthorn/cvforge/pulls).
+
 ## Roadmap
 
-- [ ] AI-powered content suggestions (ATS keyword matching, cover letter generation)
+- [ ] Swap ATS Match from mocked keyword-matching to a real Claude API call
+- [ ] Cover letter generation
 - [ ] Additional resume templates
 - [ ] Khmer-English bilingual resume export
 
