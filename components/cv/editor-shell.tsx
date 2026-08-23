@@ -6,7 +6,7 @@ import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { pdf } from "@react-pdf/renderer";
 import { toast } from "sonner";
-import { CheckIcon, ChevronDownIcon, DownloadIcon, FileTextIcon } from "lucide-react";
+import { CheckIcon, ChevronDownIcon, DownloadIcon, FileTextIcon, UploadIcon, Trash2Icon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -20,6 +20,7 @@ import { cvDataSchema, type CvData } from "@/lib/cv/schema";
 import { loadCv, saveCv, cvStorageKey } from "@/lib/cv/storage";
 import { useDemoAccount } from "@/lib/demo-account/demo-account-context";
 import { createSampleCv } from "@/lib/cv/sample-data";
+import { createEmptyCv } from "@/lib/cv/schema";
 import { templateRegistry } from "@/lib/cv/templates";
 import { generateCvDocx } from "@/lib/docx/generate-cv-docx";
 import { TemplatePicker } from "@/components/cv/editor/template-picker";
@@ -30,6 +31,7 @@ import { SkillsSection } from "@/components/cv/editor/skills-section";
 import { ProjectsSection } from "@/components/cv/editor/projects-section";
 import { LanguagesSection } from "@/components/cv/editor/languages-section";
 import { CertificationsSection } from "@/components/cv/editor/certifications-section";
+import { PdfImportDialog } from "@/components/cv/editor/pdf-import-dialog";
 import { AtsMatchSheet } from "@/components/ats-match/ats-match-sheet";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -56,6 +58,7 @@ export function CvEditorShell() {
   const [activeTab, setActiveTab] = useState<"edit" | "preview">("edit");
   const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
   const [isDownloading, setIsDownloading] = useState(false);
+  const importInputRef = useRef<HTMLInputElement>(null);
   const hasMounted = useRef(false);
   const { account } = useDemoAccount();
   // Logged-in demo accounts get their own CV, namespaced by email, so
@@ -139,6 +142,59 @@ export function CvEditorShell() {
     }
   }
 
+  function handleExport() {
+    const data = form.getValues();
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+    downloadBlob(blob, `${sanitizeFilename(data.personalInfo.fullName || data.title)}.json`);
+  }
+
+  async function handleImport(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+
+    try {
+      const parsed = cvDataSchema.safeParse(JSON.parse(await file.text()));
+      if (!parsed.success) throw new Error("Invalid CV backup");
+      form.reset(parsed.data);
+      saveCv(parsed.data, storageKey);
+      toast.success(t.editor.importSuccess);
+    } catch {
+      toast.error(t.editor.importError);
+    }
+  }
+
+  function handleClear() {
+    if (!window.confirm(t.editor.clearConfirm)) return;
+    const previousCv = form.getValues();
+    const emptyCv = createEmptyCv();
+    form.reset(emptyCv);
+    saveCv(emptyCv, storageKey);
+    toast.success(t.editor.clearSuccess, {
+      action: {
+        label: t.editor.undo,
+        onClick: () => {
+          form.reset(previousCv);
+          saveCv(previousCv, storageKey);
+          toast.success(t.editor.restoreSuccess);
+        },
+      },
+    });
+  }
+
+  function handlePdfImport(
+    personalInfo: Pick<CvData["personalInfo"], "fullName" | "headline" | "email" | "phone" | "location" | "links">,
+  ) {
+    form.setValue("personalInfo.fullName", personalInfo.fullName, { shouldDirty: true });
+    form.setValue("personalInfo.headline", personalInfo.headline, { shouldDirty: true });
+    form.setValue("personalInfo.email", personalInfo.email, { shouldDirty: true });
+    form.setValue("personalInfo.phone", personalInfo.phone, { shouldDirty: true });
+    form.setValue("personalInfo.location", personalInfo.location, { shouldDirty: true });
+    if (personalInfo.links.length > 0) {
+      form.setValue("personalInfo.links", personalInfo.links, { shouldDirty: true });
+    }
+  }
+
   if (form.formState.isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-muted/30">
@@ -184,6 +240,7 @@ export function CvEditorShell() {
             </span>
           </span>
           <AtsMatchSheet cv={activeData} />
+          <PdfImportDialog onImport={handlePdfImport} />
           <ThemeToggle />
           <LanguageSwitcher />
           <DropdownMenu>
@@ -192,15 +249,34 @@ export function CvEditorShell() {
               {isDownloading ? t.editor.preparingPdf : t.editor.download}
               <ChevronDownIcon className="size-3.5" />
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent align="end" className="w-56">
               <DropdownMenuItem onClick={() => handleDownload("pdf")}>
                 {t.editor.downloadAsPdf}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => handleDownload("docx")}>
                 {t.editor.downloadAsWord}
               </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleExport}>
+                <DownloadIcon className="size-4" />
+                {t.editor.exportBackup}
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => importInputRef.current?.click()}>
+                <UploadIcon className="size-4" />
+                {t.editor.importBackup}
+              </DropdownMenuItem>
+              <DropdownMenuItem className="text-destructive" onClick={handleClear}>
+                <Trash2Icon className="size-4" />
+                {t.editor.clearData}
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+          <input
+            ref={importInputRef}
+            type="file"
+            accept="application/json,.json"
+            className="hidden"
+            onChange={handleImport}
+          />
         </div>
       </header>
 
