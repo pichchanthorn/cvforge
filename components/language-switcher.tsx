@@ -18,7 +18,7 @@ export function LanguageSwitcher({ className }: { className?: string }) {
         type="button"
         size="sm"
         variant={language === "en" ? "secondary" : "ghost"}
-        className="h-6 px-2 text-xs"
+        className="h-7 px-2 text-xs"
         onClick={() => setLanguage("en")}
       >
         EN
@@ -27,7 +27,12 @@ export function LanguageSwitcher({ className }: { className?: string }) {
         type="button"
         size="sm"
         variant={language === "km" ? "secondary" : "ghost"}
-        className="h-6 px-2 text-xs"
+        lang="km"
+        // Kantumruy Pro renders visually lighter/smaller than Geist Sans at
+        // the same declared size and weight — bump both up slightly so the
+        // two labels read as the same visual weight, not just the same CSS
+        // font-size.
+        className="h-7 px-2 font-[family-name:var(--font-khmer)] text-sm font-semibold"
         onClick={() => setLanguage("km")}
       >
         ខ្មែរ
