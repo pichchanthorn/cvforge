@@ -31,7 +31,7 @@ import { SkillsSection } from "@/components/cv/editor/skills-section";
 import { ProjectsSection } from "@/components/cv/editor/projects-section";
 import { LanguagesSection } from "@/components/cv/editor/languages-section";
 import { CertificationsSection } from "@/components/cv/editor/certifications-section";
-import { PdfImportDialog } from "@/components/cv/editor/pdf-import-dialog";
+import { PdfImportDialog, type PdfImportResult } from "@/components/cv/editor/pdf-import-dialog";
 import { AtsMatchSheet } from "@/components/ats-match/ats-match-sheet";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -182,9 +182,7 @@ export function CvEditorShell() {
     });
   }
 
-  function handlePdfImport(
-    personalInfo: Pick<CvData["personalInfo"], "fullName" | "headline" | "email" | "phone" | "location" | "links">,
-  ) {
+  function handlePdfImport({ personalInfo, experience, education, skills, certifications }: PdfImportResult) {
     form.setValue("personalInfo.fullName", personalInfo.fullName, { shouldDirty: true });
     form.setValue("personalInfo.headline", personalInfo.headline, { shouldDirty: true });
     form.setValue("personalInfo.email", personalInfo.email, { shouldDirty: true });
@@ -192,6 +190,18 @@ export function CvEditorShell() {
     form.setValue("personalInfo.location", personalInfo.location, { shouldDirty: true });
     if (personalInfo.links.length > 0) {
       form.setValue("personalInfo.links", personalInfo.links, { shouldDirty: true });
+    }
+    if (experience.length > 0) {
+      form.setValue("experience", experience, { shouldDirty: true });
+    }
+    if (education.length > 0) {
+      form.setValue("education", education, { shouldDirty: true });
+    }
+    if (skills.length > 0) {
+      form.setValue("skills", skills, { shouldDirty: true });
+    }
+    if (certifications.length > 0) {
+      form.setValue("certifications", certifications, { shouldDirty: true });
     }
   }
 
