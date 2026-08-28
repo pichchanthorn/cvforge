@@ -14,14 +14,29 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { extractPdfText, parsePdfPersonalInfo } from "@/lib/cv/pdf-import";
+import {
+  extractPdfText,
+  parsePdfPersonalInfo,
+  parsePdfExperience,
+  parsePdfEducation,
+  parsePdfSkills,
+  parsePdfCertifications,
+} from "@/lib/cv/pdf-import";
 import type { CvData } from "@/lib/cv/schema";
 import { useT } from "@/lib/i18n/language-context";
+
+export type PdfImportResult = {
+  personalInfo: Pick<CvData["personalInfo"], "fullName" | "headline" | "email" | "phone" | "location" | "links">;
+  experience: CvData["experience"];
+  education: CvData["education"];
+  skills: CvData["skills"];
+  certifications: CvData["certifications"];
+};
 
 export function PdfImportDialog({
   onImport,
 }: {
-  onImport: (personalInfo: Pick<CvData["personalInfo"], "fullName" | "headline" | "email" | "phone" | "location" | "links">) => void;
+  onImport: (result: PdfImportResult) => void;
 }) {
   const t = useT();
   const s = t.editor;
@@ -61,11 +76,23 @@ export function PdfImportDialog({
 
   function handleImport() {
     const personalInfo = parsePdfPersonalInfo(text);
-    if (!personalInfo.fullName && !personalInfo.email && !personalInfo.phone) {
+    const experience = parsePdfExperience(text);
+    const education = parsePdfEducation(text);
+    const skills = parsePdfSkills(text);
+    const certifications = parsePdfCertifications(text);
+    if (
+      !personalInfo.fullName &&
+      !personalInfo.email &&
+      !personalInfo.phone &&
+      experience.length === 0 &&
+      education.length === 0 &&
+      skills.length === 0 &&
+      certifications.length === 0
+    ) {
       toast.error(s.pdfImportNoData);
       return;
     }
-    onImport(personalInfo);
+    onImport({ personalInfo, experience, education, skills, certifications });
     toast.success(s.pdfImportSuccess);
     setOpen(false);
   }
