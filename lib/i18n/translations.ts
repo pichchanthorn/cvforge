@@ -283,6 +283,8 @@ export const translations = {
         achievements: "Achievements",
         addBullet: "Add bullet",
         bulletPlaceholder: "Describe an achievement, using numbers where possible",
+        achievementsTip:
+          "Tip: Show what you did + the result — add numbers when possible. Example: Reduced monthly reporting time by 30% by automating Excel reports.",
       },
       education: {
         title: "Education",
@@ -647,6 +649,8 @@ export const translations = {
         achievements: "សមិទ្ធផល",
         addBullet: "បន្ថែមចំណុច",
         bulletPlaceholder: "ពិពណ៌នាសមិទ្ធផលមួយ ដោយប្រើលេខបើអាច",
+        achievementsTip:
+          "គន្លឹះ៖ បង្ហាញអ្វីដែលអ្នកបានធ្វើ និងលទ្ធផល — បន្ថែមលេខនៅពេលអាច។ ឧទាហរណ៍៖ កាត់បន្ថយពេលវេលារាយការណ៍ប្រចាំខែ ៣០% ដោយស្វ័យប្រវត្តិកម្មរបាយការណ៍ Excel។",
       },
       education: {
         title: "ការសិក្សា",
