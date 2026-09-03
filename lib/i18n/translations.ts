@@ -357,10 +357,12 @@ export const translations = {
     },
     progress: {
       title: "Build your CV",
-      progressLabel: "{percent}% complete",
+      progressLabel: "{percent}% ready",
+      readyLabel: "CV ready",
       optionalTag: "Optional",
       complete: "Complete",
       needsAttention: "Needs attention",
+      notAdded: "Not added",
     },
   },
   km: {
@@ -716,10 +718,12 @@ export const translations = {
     },
     progress: {
       title: "សាងសង់ CV របស់អ្នក",
-      progressLabel: "បានបំពេញ {percent}%",
+      progressLabel: "ត្រៀមរួចរាល់ {percent}%",
+      readyLabel: "CV ត្រៀមរួចរាល់",
       optionalTag: "ស្រេចចិត្ត",
       complete: "បានបំពេញ",
       needsAttention: "ត្រូវការការយកចិត្តទុកដាក់",
+      notAdded: "មិនទាន់បន្ថែម",
     },
   },
 } as const satisfies Record<Language, unknown>;

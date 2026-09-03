@@ -5,10 +5,10 @@ import { useWatch, type Control } from "react-hook-form";
 import { Card, CardContent } from "@/components/ui/card";
 import { badgeVariants } from "@/components/ui/badge";
 import {
-  CORE_SECTION_KEYS,
-  OPTIONAL_SECTION_KEYS,
-  computeCvProgress,
+  ALL_SECTION_KEYS,
+  computeCvReadiness,
   isSectionComplete,
+  isSectionOptional,
   sectionAnchorId,
   type CvSectionKey,
 } from "@/lib/cv/progress";
@@ -25,11 +25,12 @@ export function CvProgressCard({ control }: { control: Control<CvData> }) {
   const s = t.sections;
   const p = t.progress;
   const data = useWatch({ control }) as CvData;
-  const { percent } = computeCvProgress(data);
+  const { percent, isReady } = computeCvReadiness(data);
 
-  function renderChip(key: CvSectionKey, optional: boolean) {
+  function renderChip(key: CvSectionKey) {
     const complete = isSectionComplete(key, data);
-    const statusLabel = complete ? p.complete : p.needsAttention;
+    const optional = isSectionOptional(key, data);
+    const statusLabel = complete ? p.complete : optional ? p.notAdded : p.needsAttention;
     return (
       <button
         key={key}
@@ -54,7 +55,14 @@ export function CvProgressCard({ control }: { control: Control<CvData> }) {
       <CardContent className="flex flex-col gap-2">
         <div className="flex items-center justify-between gap-2">
           <span className="text-sm font-medium">{p.title}</span>
-          <span className="text-xs text-muted-foreground">{p.progressLabel.replace("{percent}", String(percent))}</span>
+          {isReady ? (
+            <span className="inline-flex items-center gap-1 text-xs font-medium text-emerald-700 dark:text-emerald-400">
+              <CheckIcon aria-hidden className="size-3.5" />
+              {p.readyLabel}
+            </span>
+          ) : (
+            <span className="text-xs text-muted-foreground">{p.progressLabel.replace("{percent}", String(percent))}</span>
+          )}
         </div>
         <div
           className="h-1.5 w-full overflow-hidden rounded-full bg-muted"
@@ -66,14 +74,14 @@ export function CvProgressCard({ control }: { control: Control<CvData> }) {
           aria-label={p.title}
         >
           <div
-            className="h-full rounded-full bg-primary transition-[width] duration-300 motion-reduce:transition-none"
+            className={cn(
+              "h-full rounded-full transition-[width] duration-300 motion-reduce:transition-none",
+              isReady ? "bg-emerald-600 dark:bg-emerald-500" : "bg-primary",
+            )}
             style={{ width: `${percent}%` }}
           />
         </div>
-        <div className="flex flex-wrap gap-1.5 pt-0.5">
-          {CORE_SECTION_KEYS.map((key) => renderChip(key, false))}
-          {OPTIONAL_SECTION_KEYS.map((key) => renderChip(key, true))}
-        </div>
+        <div className="flex flex-wrap gap-1.5 pt-0.5">{ALL_SECTION_KEYS.map((key) => renderChip(key))}</div>
       </CardContent>
     </Card>
   );
