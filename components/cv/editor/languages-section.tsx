@@ -5,6 +5,7 @@ import { LanguagesIcon, Trash2Icon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SectionCard } from "@/components/cv/editor/section-card";
 import { TextField } from "@/components/cv/editor/controlled-field";
+import { sectionAnchorId } from "@/lib/cv/progress";
 import { newId, type CvData } from "@/lib/cv/schema";
 import { useT } from "@/lib/i18n/language-context";
 
@@ -15,6 +16,7 @@ export function LanguagesSection({ control }: { control: Control<CvData> }) {
 
   return (
     <SectionCard
+      id={sectionAnchorId("languages")}
       title={s.title}
       onAdd={() => append({ id: newId(), name: "", proficiency: "" })}
       addLabel={s.addLabel}

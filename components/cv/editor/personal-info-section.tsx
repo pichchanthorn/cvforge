@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { PlusIcon, Trash2Icon, CameraIcon, XIcon, UserIcon } from "lucide-react";
 import { TextField, TextareaField } from "@/components/cv/editor/controlled-field";
+import { sectionAnchorId } from "@/lib/cv/progress";
 import { newId, type CvData } from "@/lib/cv/schema";
 import { useT } from "@/lib/i18n/language-context";
 import { resizeImageToSquareDataUrl } from "@/lib/image/resize-image";
@@ -22,7 +23,7 @@ export function PersonalInfoSection({ control }: { control: Control<CvData> }) {
   });
 
   return (
-    <Card>
+    <Card id={sectionAnchorId("personalInfo")}>
       <CardHeader>
         <CardTitle>{t.sections.personalInfo.title}</CardTitle>
       </CardHeader>

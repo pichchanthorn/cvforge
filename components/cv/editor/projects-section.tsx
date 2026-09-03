@@ -4,6 +4,7 @@ import { useFieldArray, type Control } from "react-hook-form";
 import { FolderKanbanIcon } from "lucide-react";
 import { SectionCard, ItemCard } from "@/components/cv/editor/section-card";
 import { TextField, TextareaField, StringListField } from "@/components/cv/editor/controlled-field";
+import { sectionAnchorId } from "@/lib/cv/progress";
 import { newId, type CvData } from "@/lib/cv/schema";
 import { useT } from "@/lib/i18n/language-context";
 
@@ -14,6 +15,7 @@ export function ProjectsSection({ control }: { control: Control<CvData> }) {
 
   return (
     <SectionCard
+      id={sectionAnchorId("projects")}
       title={s.title}
       onAdd={() =>
         append({
