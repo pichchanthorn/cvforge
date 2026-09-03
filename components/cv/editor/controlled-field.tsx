@@ -2,7 +2,7 @@
 
 import { Controller, type Control, type FieldPath, type FieldValues } from "react-hook-form";
 import { PlusIcon, Trash2Icon } from "lucide-react";
-import { Field, FieldLabel, FieldError } from "@/components/ui/field";
+import { Field, FieldLabel, FieldError, FieldDescription } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -85,7 +85,8 @@ export function StringListField<T extends FieldValues>({
   addLabel = "Add",
   placeholder,
   multiline = false,
-}: BaseProps<T> & { addLabel?: string; multiline?: boolean }) {
+  helperText,
+}: BaseProps<T> & { addLabel?: string; multiline?: boolean; helperText?: string }) {
   return (
     <Controller
       control={control}
@@ -106,6 +107,7 @@ export function StringListField<T extends FieldValues>({
                 {addLabel}
               </Button>
             </div>
+            {helperText && <FieldDescription>{helperText}</FieldDescription>}
             {items.map((item, index) => {
               const onChangeItem = (value: string) => {
                 const next = [...items];

@@ -150,6 +150,7 @@ function ExperienceEntryCard({
             label={s.achievements}
             addLabel={s.addBullet}
             placeholder={s.bulletPlaceholder}
+            helperText={s.achievementsTip}
             multiline
           />
         </div>
