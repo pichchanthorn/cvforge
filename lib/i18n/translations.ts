@@ -355,6 +355,13 @@ export const translations = {
         linkUrlPlaceholder: "yoursite.com",
       },
     },
+    progress: {
+      title: "Build your CV",
+      progressLabel: "{percent}% complete",
+      optionalTag: "Optional",
+      complete: "Complete",
+      needsAttention: "Needs attention",
+    },
   },
   km: {
     common: {
@@ -706,6 +713,13 @@ export const translations = {
         linkUrl: "URL",
         linkUrlPlaceholder: "yoursite.com",
       },
+    },
+    progress: {
+      title: "សាងសង់ CV របស់អ្នក",
+      progressLabel: "បានបំពេញ {percent}%",
+      optionalTag: "ស្រេចចិត្ត",
+      complete: "បានបំពេញ",
+      needsAttention: "ត្រូវការការយកចិត្តទុកដាក់",
     },
   },
 } as const satisfies Record<Language, unknown>;

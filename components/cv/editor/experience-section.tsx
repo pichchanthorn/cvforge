@@ -5,6 +5,7 @@ import { BriefcaseIcon } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { SectionCard, ItemCard } from "@/components/cv/editor/section-card";
 import { TextField, StringListField } from "@/components/cv/editor/controlled-field";
+import { sectionAnchorId } from "@/lib/cv/progress";
 import { newId, type CvData } from "@/lib/cv/schema";
 import { useT } from "@/lib/i18n/language-context";
 
@@ -21,6 +22,7 @@ export function ExperienceSection({
 
   return (
     <SectionCard
+      id={sectionAnchorId("experience")}
       title={s.title}
       onAdd={() =>
         append({

@@ -24,6 +24,7 @@ import { createEmptyCv } from "@/lib/cv/schema";
 import { templateRegistry } from "@/lib/cv/templates";
 import { generateCvDocx } from "@/lib/docx/generate-cv-docx";
 import { TemplatePicker } from "@/components/cv/editor/template-picker";
+import { CvProgressCard } from "@/components/cv/editor/cv-progress-card";
 import { PersonalInfoSection } from "@/components/cv/editor/personal-info-section";
 import { ExperienceSection } from "@/components/cv/editor/experience-section";
 import { EducationSection } from "@/components/cv/editor/education-section";
@@ -306,6 +307,7 @@ export function CvEditorShell() {
 
       <main className="mx-auto grid w-full max-w-7xl flex-1 grid-cols-1 gap-6 p-4 sm:p-6 md:grid-cols-2">
         <div className={cn("flex flex-col gap-4", activeTab !== "edit" && "hidden md:flex")}>
+          <CvProgressCard control={form.control} />
           <TemplatePicker control={form.control} />
           <PersonalInfoSection control={form.control} />
           <ExperienceSection control={form.control} setValue={form.setValue} />

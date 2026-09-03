@@ -5,6 +5,7 @@ import { GraduationCapIcon } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { SectionCard, ItemCard } from "@/components/cv/editor/section-card";
 import { TextField, TextareaField } from "@/components/cv/editor/controlled-field";
+import { sectionAnchorId } from "@/lib/cv/progress";
 import { newId, type CvData } from "@/lib/cv/schema";
 import { useT } from "@/lib/i18n/language-context";
 
@@ -21,6 +22,7 @@ export function EducationSection({
 
   return (
     <SectionCard
+      id={sectionAnchorId("education")}
       title={s.title}
       onAdd={() =>
         append({

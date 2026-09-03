@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
 export function SectionCard({
+  id,
   title,
   description,
   onAdd,
@@ -15,6 +16,8 @@ export function SectionCard({
   emptyIcon,
   children,
 }: {
+  /** Anchor id, e.g. so the progress navigator can scroll to this section. */
+  id?: string;
   title: string;
   description?: string;
   onAdd: () => void;
@@ -26,7 +29,7 @@ export function SectionCard({
   children: React.ReactNode;
 }) {
   return (
-    <Card>
+    <Card id={id}>
       <CardHeader className="flex-row items-center justify-between">
         <div>
           <CardTitle>{title}</CardTitle>
